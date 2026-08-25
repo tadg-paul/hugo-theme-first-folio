@@ -3,7 +3,57 @@
 Central acceptance-criteria record for closed issues.
 
 - Cutover date: 2026-07-03
-- Last migrated AC: AC83.5 from #83 on 2026-08-25
+- Last migrated AC: AC84.4 from #84 on 2026-08-25
+
+**Key:** ✅ passing · ⏳ pending · ❌ failing · ~~🚫 removed~~
+
+---
+
+## Taxonomy term-page presentation
+
+### AC84.1 — List is the compatibility presentation
+
+- Introduced: #84 (closed 2026-08-25)
+- Migrated: 2026-08-25
+- Specification: Given term-list presentation configuration resolves to the compatibility default, a taxonomy term page retains its existing heading, unpaginated title/date list, draft label, and excluded-type behavior, renders optional term-bundle content before the list, and contains no masonry grid, pagination navigation, or masonry initializer.
+- Tests:
+  - ✅ RT-84.1: With more eligible pages than the site pager size, a default term route exposes its existing heading and every linked eligible title and date on the first route in list markup.
+  - ✅ RT-84.2: A draft-enabled default build orders the term heading, term-bundle content, then list, and exposes the included draft page label inside that list.
+  - ✅ RT-84.3: Default list mode excludes every page whose type appears in `excludedTypes`.
+  - ✅ RT-84.4: Default list mode has no masonry grid, pagination navigation, or masonry initializer.
+  - ✅ RT-84.13: Separate unsupported-site and unsupported-term states with no valid lower-precedence value each expose the complete list presentation and no masonry grid or initializer.
+  - ✅ RT-84.14: An unsupported term value with valid site-level cards falls through to linked masonry items and the masonry initializer.
+
+### AC84.2 — Cards are filtered, paginated, and carousel-free
+
+- Introduced: #84 (closed 2026-08-25)
+- Migrated: 2026-08-25
+- Specification: Given `params.termListStyle` is `cards`, taxonomy term pages retain their heading and optional term-bundle content and present the filtered term set as paginated masonry cards with the masonry initializer and without carousel behavior.
+- Tests:
+  - ✅ RT-84.5: Site-level cards mode orders the term heading, term content, then masonry grid and renders one standard linked masonry item with read-more affordance per eligible page while omitting section labels.
+  - ✅ RT-84.6: Cards mode splits exact, non-overlapping eligible page sets at the configured site pager size and links to a rendered subsequent-page route containing the remainder.
+  - ✅ RT-84.7: Excluded page types consume neither cards nor pager slots.
+  - ✅ RT-84.8: Cards mode includes the theme `js/masonry-init.js` script and contains neither carousel markup nor a `js/carousel.js` script.
+
+### AC84.3 — Supported term values override site presentation
+
+- Introduced: #84 (closed 2026-08-25)
+- Migrated: 2026-08-25
+- Specification: Given a term bundle defines `list_style`, its `list` or `cards` value takes precedence over the site-level term presentation in either direction.
+- Tests:
+  - ✅ RT-84.9: A term-level cards value overrides a site-level list value.
+  - ✅ RT-84.10: A term-level list value overrides a site-level cards value.
+  - ✅ RT-84.11: Both override directions retain the term heading, term content, and excluded-type filtering.
+
+### AC84.4 — Consumers can discover and adopt term cards
+
+- Introduced: #84 (closed 2026-08-25)
+- Migrated: 2026-08-25
+- Specification: Given the public example and documentation, a consuming site can discover the list default, cards opt-in, configuration precedence, supported values, filtering, pagination, and compatibility behavior.
+- Tests:
+  - ✅ RT-84.12: The explicitly configured example site exposes at least one taxonomy term through the documented cards presentation.
+  - ⏳ UT-84.1: pending human resolution in delivery master #82.
+  - ⏳ UT-84.2: pending human resolution in delivery master #82.
 
 **Key:** ✅ passing · ⏳ pending · ❌ failing · ~~🚫 removed~~
 
