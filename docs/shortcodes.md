@@ -1,4 +1,4 @@
-<!-- Version: 1.7 | Last updated: 2026-08-25 -->
+<!-- Version: 1.8 | Last updated: 2026-08-25 -->
 
 # Shortcodes Reference
 
@@ -797,7 +797,7 @@ The component is opt-in. Set `params.tagcloud.enabled: true` before placing the 
 | `maxLines` | No | `2` | Maximum lines for long terms. Use `1` to prevent wrapping. |
 | `wrapOver` | No | `15` | Apply the line-width cap only to terms longer than this character count. |
 
-Term sizing is intentionally not configurable per call. Set the site-wide floor and maximum ratio with `params.tagcloud.base` and `params.tagcloud.multiplier`; see [Configuration Reference](config.md#tag-cloud).
+Term sizing and resting text opacity are intentionally not configurable per call. Set the site-wide floor, maximum ratio, and optional muted state with `params.tagcloud.base`, `params.tagcloud.multiplier`, and `params.tagcloud.opacity`; see [Configuration Reference](config.md#tag-cloud).
 
 ### Usage
 
@@ -808,6 +808,7 @@ params:
     enabled: true
     base: 0.75rem
     multiplier: 3
+    opacity: 0.6
 ```
 
 ```markdown
@@ -936,6 +937,7 @@ See [live example on the demo site](https://demo.theme.tadg.ie/journal/shortcode
 
 ## Changelog
 
+- **1.8** (2026-08-25): #82 example-site polish. Documented the site-wide tag-cloud resting opacity control.
 - **1.7** (2026-08-25): #83 documentation. Added the opt-in `tagcloud` shortcode, its template partial, parameters, sizing configuration, and example-site placement.
 - **1.6** (2026-07-14): #76 documentation. Changed the block spoiler label to a full-width control with centred text.
 - **1.5** (2026-07-14): #76 documentation. Documented inherited mask colour, configurable opacity, the upper-left block label, and revealed-text re-conceal behaviour.

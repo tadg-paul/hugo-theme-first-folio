@@ -43,6 +43,7 @@
 
     params.tagcloud.base        Size of the least-used term, any CSS length.
     params.tagcloud.multiplier  The most-used term renders at base x this.
+    params.tagcloud.opacity     Text opacity at rest, from 0 to 1.
 
   One home, site-wide, so every cloud on the site agrees. The stylesheet
   supplies fallbacks when the keys are absent.
@@ -169,6 +170,8 @@
     {{- /* %v not %s: multiplier arrives from YAML as a number, and %s renders a
            Go type error into the stylesheet rather than the value. */ -}}
     {{- with $multiplier }}{{ $style = $style | append (printf "--tagcloud-multiplier: %v;" .) }}{{ end -}}
+    {{- /* Use isset rather than with so zero remains a valid configured opacity. */ -}}
+    {{- if isset site.Params.tagcloud "opacity" }}{{ $style = $style | append (printf "--tagcloud-text-opacity: %v;" site.Params.tagcloud.opacity) }}{{ end -}}
 
     <ul class="tagcloud tagcloud--{{ $pack }}" data-taxonomy="{{ $taxonomy }}"
       {{- with $style }} style="{{ delimit . " " | safeCSS }}"{{ end }}>

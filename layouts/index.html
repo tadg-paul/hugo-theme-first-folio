@@ -17,11 +17,11 @@
 			{{- /* Check for sidebar configuration */ -}}
 			{{- $showSidebar := .Params.sidebar | default false -}}
 
+			{{- if isset .Site.Params "subtitle" }}
 			<div class="site-description">
-				{{- if isset .Site.Params "subtitle" -}}
 				<p>{{ .Site.Params.Subtitle | .Page.RenderString }}</p>
-				{{- end -}}
 			</div>
+			{{- end }}
 
 			{{- /* Issue #54: prose mode wraps .Content with the signpost (top) and
 			     signpost-footer (bottom) partials, matching the article-page ordering. */ -}}

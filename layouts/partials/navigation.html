@@ -1,6 +1,5 @@
-{{/* ABOUTME: Main site navigation - simple links with active section indicator */}}
-{{/* Issue #62: No dropdowns - all top-level links are simple links */}}
-{{/* Active section gets nav-item-active class with thick red border */}}
+{{/* ABOUTME: Main navigation with active indicators and accessible one-level Hugo menu groups. */}}
+{{/* ABOUTME: Link styling remains the default; params.navigation.style="buttons" is opt-in. */}}
 
 <!-- Burger menu button for mobile -->
 <button class="burger-menu" aria-label="Toggle menu" id="burger-toggle">
@@ -9,7 +8,8 @@
   <span class="burger-line"></span>
 </button>
 
-<nav id="main-nav">
+{{- $buttonStyle := eq (lower (.Site.Params.navigation.style | default "links")) "buttons" -}}
+<nav id="main-nav" aria-label="Main navigation"{{ if $buttonStyle }} class="nav--buttons"{{ end }}>
   {{- /* Get the current section */ -}}
   {{- $currentSection := "" -}}
   {{- with $.Page.CurrentSection -}}
@@ -27,12 +27,34 @@
     {{- /* Check if this menu item matches current section */ -}}
     {{- $isActive := eq $currentSection $menuSection -}}
 
-    {{- /* Build class string based on active state */ -}}
+    {{- /* Build class string based on active state. A group is active when one
+           of its direct children represents the current section. */ -}}
+    {{- $groupActive := false -}}
+    {{- range .Children -}}
+      {{- $childSection := path.Base (trim .URL "/") -}}
+      {{- if eq $currentSection $childSection -}}{{- $groupActive = true -}}{{- end -}}
+    {{- end -}}
     {{- $classes := "nav-item" -}}
-    {{- if $isActive -}}
+    {{- if or $isActive $groupActive -}}
       {{- $classes = printf "%s nav-item-active" $classes -}}
     {{- end -}}
 
-    <a href="{{ .URL }}" class="{{ $classes }}">{{ .Name }}</a>
+    {{- if .HasChildren }}
+    <details class="nav-group">
+      <summary class="{{ $classes }}">{{ .Name }}</summary>
+      <div class="nav-submenu">
+        {{- range .Children }}
+          {{- $childSection := path.Base (trim .URL "/") -}}
+          {{- $childClasses := "nav-submenu-item" -}}
+          {{- if eq $currentSection $childSection -}}
+            {{- $childClasses = printf "%s nav-item-active" $childClasses -}}
+          {{- end }}
+        <a href="{{ .URL }}" class="{{ $childClasses }}"{{ if eq $currentSection $childSection }} aria-current="page"{{ end }}>{{ .Name }}</a>
+        {{- end }}
+      </div>
+    </details>
+    {{- else }}
+    <a href="{{ .URL }}" class="{{ $classes }}"{{ if $isActive }} aria-current="page"{{ end }}>{{ .Name }}</a>
+    {{- end }}
   {{ end }}
 </nav>

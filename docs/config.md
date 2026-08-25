@@ -1,4 +1,4 @@
-<!-- Version: 1.6 | Last updated: 2026-08-25 -->
+<!-- Version: 1.7 | Last updated: 2026-08-25 -->
 
 # Configuration Reference
 
@@ -544,6 +544,7 @@ params:
     enabled: true
     base: 0.75rem
     multiplier: 3
+    opacity: 1
 ```
 
 | Key | Default | Description |
@@ -551,8 +552,9 @@ params:
 | `enabled` | `false` | Enables tag-cloud rendering and loads its fingerprinted stylesheet. |
 | `base` | `0.75rem` | CSS size of the least-used rendered term. Accepts any CSS length. |
 | `multiplier` | `3` | Maximum term size as a multiple of `base`. |
+| `opacity` | `1` | Text opacity at rest, from `0` to `1`. Hover and keyboard focus restore full opacity. |
 
-Sizing is site-wide so clouds remain visually consistent. Data selection, sorting, packing, and optional counts belong to each shortcode or partial call; see [Shortcodes Reference](shortcodes.md#tagcloud).
+Sizing and resting text opacity are site-wide so clouds remain visually consistent. Data selection, sorting, packing, and optional counts belong to each shortcode or partial call; see [Shortcodes Reference](shortcodes.md#tagcloud).
 
 ---
 
@@ -607,18 +609,32 @@ params:
 
 ## Menu
 
+Top-level links are the default. Set `params.navigation.style` to `buttons` for a compact button treatment; sites that omit it retain the existing link presentation.
+
 ```yaml
+params:
+  navigation:
+    style: buttons  # links | buttons
+
 menu:
   main:
+    - name: Home
+      url: /
+      weight: 1
+    - identifier: explore
+      name: Explore
+      weight: 10
     - name: Blog
       url: /blog/
+      parent: explore
       weight: 10
     - name: Gallery
       url: /gallery/
+      parent: explore
       weight: 20
 ```
 
-Lower weight = appears first in navigation.
+Lower weight appears first in navigation. A menu item with an `identifier` becomes a one-level disclosure menu when other entries name that identifier as their `parent`. The disclosure uses native `<details>` and `<summary>` controls, so it remains keyboard-accessible without JavaScript. Further nesting is not rendered.
 
 ---
 
@@ -630,6 +646,7 @@ See `exampleSite/config/_default/hugo.yaml` for a complete working configuration
 
 ## Changelog
 
+- **1.7** (2026-08-25): #82 example-site polish. Added tag-cloud resting opacity and opt-in button navigation with one-level nested Hugo menus.
 - **1.6** (2026-08-25): #84 documentation. Added the backwards-compatible list/cards contract for taxonomy term pages, including precedence, filtering, and pagination behavior.
 - **1.5** (2026-08-25): #83 documentation. Added the opt-in tag-cloud activation and site-wide sizing contract.
 - **1.4** (2026-07-18): #79 documentation. Added localized review-attribution connectors and clarified retained section metadata on review-enabled cards and carousel items.

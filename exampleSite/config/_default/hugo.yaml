@@ -9,7 +9,7 @@ module:
   imports:
     - path: github.com/tigger-developer/hugo-theme-first-folio
 
-copyright: "© 2023-2026 Taḋg Paul — Apache License 2.0"
+copyright: "First Folio theme demo — All content and authors are fictitious. © 2023-2026 Taḋg Paul — Apache License 2.0"
 
 pagination:
   pagerSize: 12
@@ -26,14 +26,19 @@ params:
   # prereleaseKey: testpass
   # Colour mode
   ambience:
-    default: dark         # auto | light | dark
+    default: auto         # auto | light | dark
     toggle: true          # show light/dark toggle button
 
   # Opt-in weighted taxonomy cloud demonstrated on the homepage
   tagcloud:
     enabled: true
-    base: 0.75rem
-    multiplier: 3
+    base: 0.7rem
+    multiplier: 2.2
+    opacity: 0.6
+
+  # Optional button treatment for top-level navigation controls
+  navigation:
+    style: buttons        # links | buttons
 
   # Opt-in masonry presentation for taxonomy term pages such as /tags/theme/
   termListStyle: cards
@@ -185,40 +190,52 @@ params:
       icon: rss                                      # Feather icon
       url: /index.xml
 
-  subtitle: "A demo of the [First Folio](https://github.com/tigger-developer/hugo-theme-first-folio) theme. All content and authors are fictitious."
+  footerLinks:
+    - name: About this demo
+      url: /about/
 
 menu:
   main:
     - name: Home
       url: /
       weight: 1
+    - identifier: explore
+      name: Explore
+      weight: 10
     - name: Recipes
       url: /recipes/
+      parent: explore
       weight: 10
     - name: Journal
       url: /journal/
+      parent: explore
       weight: 20
     - name: Photography
       url: /photography/
+      parent: explore
       weight: 30
     - name: Stories
       url: /stories/
+      parent: explore
       weight: 40
     - name: Poetry
       url: /poetry/
+      parent: explore
       weight: 45
-    - name: Profile
-      url: /profile/
-      weight: 48
+    - identifier: reviews
+      name: Reviews
+      weight: 20
     - name: Book Reviews
       url: /book-reviews/
+      parent: reviews
       weight: 46
     - name: Game Reviews
       url: /game-reviews/
+      parent: reviews
       weight: 47
-    - name: Tags
-      url: /tags/
-      weight: 50
+    - name: Profile
+      url: /profile/
+      weight: 30
 
 taxonomies:
   tag: tags

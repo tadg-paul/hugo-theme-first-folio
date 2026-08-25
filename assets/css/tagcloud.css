@@ -210,10 +210,14 @@
      glyphs it contains and the text spills out of the pill. */
   line-height: 1.15;
   color: hsl(var(--tagcloud-hue, 0) 45% 22%);
+  opacity: var(--tagcloud-text-opacity, 1);
   text-decoration: none;
+  transition: opacity 0.2s ease;
 }
 
-.tagcloud > .tagcloud-term:hover .tagcloud-link {
+.tagcloud > .tagcloud-term:hover .tagcloud-link,
+.tagcloud > .tagcloud-term:focus-within .tagcloud-link {
+  opacity: 1;
   text-decoration: underline;
 }
 
@@ -272,7 +276,8 @@ html[data-theme="dark"] .tagcloud-count {
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .tagcloud > .tagcloud-term {
+  .tagcloud > .tagcloud-term,
+  .tagcloud-link {
     transition: none;
   }
 }
