@@ -1,0 +1,18 @@
+baseURL: /
+languageCode: en-GB
+title: Term List Style Fixture
+
+pagination:
+  pagerSize: 2
+
+params:
+  dateFormatShort: "2006-01-02"
+  excludedTypes:
+    - page
+    - secret
+  readMore:
+    type: text
+    value: Read entry
+
+taxonomies:
+  tag: tags
