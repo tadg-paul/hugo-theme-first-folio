@@ -3,7 +3,7 @@
 Central acceptance-criteria record for closed issues.
 
 - Cutover date: 2026-07-03
-- Last migrated AC: AC35 from #78 on 2026-07-17
+- Last migrated AC: AC83.5 from #83 on 2026-08-25
 
 **Key:** ✅ passing · ⏳ pending · ❌ failing · ~~🚫 removed~~
 
@@ -46,3 +46,70 @@ Central acceptance-criteria record for closed issues.
 | ~~AC33 - 🚫 Removed~~ | Issue #78 `AC78.10` | ~~Given the example site review demonstrations, each rendered article-layout family appears once across the book-review and game-review sections, both item types remain represented, and every referenced demonstration image is usable.~~ | ~~🚫 RT-78.38: The built example site contains six review routes spanning columns, banner, featured, background, hero, and text-only presentations exactly once across both sections.~~<br>RT-78.39 retained under AC78.11 without changing its ID. |
 | AC34 | Issue #78 `AC78.11` | Given either built-in review section in the example site, banner, hero, featured, background, featured-columns-left, and featured-columns-right each have exactly one review page; the plain text fallback is not presented as a named layout; and every referenced demonstration image is usable. | ~~🚫 RT-78.39: Every SVG referenced by the twelve review demonstrations is well formed, and all four columns pages contain article media.~~<br>✅ RT-78.42: The built book-review section contains exactly one page for banner, hero, featured, background, featured-columns-left, and featured-columns-right.<br>✅ RT-78.43: The built game-review section contains exactly one page for banner, hero, featured, background, featured-columns-left, and featured-columns-right, with no text-only demonstration.<br>✅ RT-78.44: All four built columns demonstrations retain article media after the generated-image refresh. |
 | AC35 | Issue #78 `AC78.12` | Given the twelve example review demonstrations, each page has its own fictional reviewed-item title and creator, one generated raster article image, and a separately generated raster cover; all twenty-four assets are distinct, published, and usable. | ✅ RT-78.45: Built review metadata contains twelve distinct reviewed-item titles and twelve distinct creator names.<br>✅ RT-78.46: Each built review references separate article and cover raster assets, all twenty-four asset URLs are distinct, and every published asset decodes with non-zero dimensions.<br>✅ UT-78.5: The twenty-four images are visually assessed as varied article scenes and distinct book/game covers without the previous dark-rectangle treatment; the titles and creator identities read as interesting, silly, and unmistakably fictional. |
+
+---
+
+## Tag clouds
+
+### AC83.1 — Generic tag-cloud activation is opt-in
+
+- Introduced: #83 (closed 2026-08-25)
+- Migrated: 2026-08-25
+- Specification: Given `params.tagcloud.enabled` is absent or false, First Folio has no generic tag-cloud presentation or tag-cloud stylesheet on pages that explicitly place its shortcode or partial, while the existing taxonomy-index presentation remains available.
+- Tests:
+  - ✅ RT-83.1: An absent enable key leaves a shortcode-bearing rendered page without generic cloud markup or stylesheet.
+  - ✅ RT-83.2: An explicit false enable key leaves a shortcode-bearing rendered page without generic cloud markup or stylesheet.
+  - ✅ RT-83.3: A default-config rendered taxonomy index retains its existing tag-cloud structure and term links.
+  - ✅ RT-83.20: A fixture template that directly places the partial cannot bypass the absent or false enable gate.
+
+### AC83.2 — Enabled clouds expose stable taxonomy data
+
+- Introduced: #83 (closed 2026-08-25)
+- Migrated: 2026-08-25
+- Specification: Given the generic tag cloud is enabled and explicitly placed, First Folio exposes eligible taxonomy terms as accessible links with stable rank, normalized weight, stable hue, and optional article counts, and omits the cloud when the selected taxonomy has no eligible terms.
+- Tests:
+  - ✅ RT-83.4: An enabled default invocation exposes every eligible tag as a link to its rendered term route.
+  - ✅ RT-83.5: An enabled custom-taxonomy invocation links terms from that taxonomy rather than tags.
+  - ✅ RT-83.6: Unequal term frequencies expose descending ranks and weights spanning zero to one.
+  - ✅ RT-83.7: Equal term frequencies remain finite and expose equal full weights without invalid numeric values.
+  - ✅ RT-83.8: Repeated builds expose identical hues for identical term names.
+  - ✅ RT-83.9: Counts are absent by default and, when enabled, are visible but hidden from duplicate assistive announcement.
+  - ✅ RT-83.21: An empty or unknown selected taxonomy leaves no empty cloud markup and does not fail the site build.
+  - ✅ RT-83.22: An enabled fixture template that directly places the partial exposes a functioning linked cloud and the theme stylesheet.
+  - ✅ RT-83.23: Chosen distinct term names expose distinct hues, and repeated builds preserve each name's hue.
+  - ✅ RT-83.24: Enabled counts equal each term's actual page frequency and are aria-hidden; default and explicit false omit them.
+
+### AC83.3 — Supported options deterministically shape the cloud
+
+- Introduced: #83 (closed 2026-08-25)
+- Migrated: 2026-08-25
+- Specification: Given supported cloud options, First Folio deterministically selects, orders, weights, and arranges the rendered term set according to taxonomy, minimum count, limit, alphabetical/count sort, linear/log scale, packing, floating, and wrapping values.
+- Tests:
+  - ✅ RT-83.10: Minimum-count filtering removes every term below the threshold.
+  - ✅ RT-83.11: A positive limit retains only the most-used terms and zero retains all eligible terms.
+  - ✅ RT-83.12: Alphabetical sort uses term order and count sort uses descending frequency order.
+  - ✅ RT-83.13: Linear and logarithmic scales expose their expected distinct intermediate normalized weights.
+  - ✅ RT-83.14: Rows, columns, and float packing expose their respective modifier classes.
+  - ✅ RT-83.15: Float and lead counts move the ranked lead group ahead of the remaining display order and identify only the configured floated terms.
+  - ✅ RT-83.16: Multi-line wrapping exposes a per-term line-width property only for terms beyond the configured threshold; one-line mode leaves terms uncapped.
+
+### AC83.4 — Cloud styling is responsive and accessible
+
+- Introduced: #83 (closed 2026-08-25)
+- Migrated: 2026-08-25
+- Specification: Given enabled tag-cloud styling, First Folio presents legible responsive term bubbles with site-wide size configuration, light/dark ambience, keyboard focus treatment, and reduced-motion behavior.
+- Tests:
+  - ✅ RT-83.17: Configured base and multiplier values appear on the rendered cloud while omitted values defer to built stylesheet defaults.
+  - ✅ RT-83.18: The enabled rendered page links the fingerprinted theme tag-cloud stylesheet and its delivered asset contains responsive, dark-ambience, focus, and reduced-motion rules.
+  - ⏳ UT-83.1: pending human resolution in delivery master #82.
+
+### AC83.5 — Consumers can discover and adopt the component
+
+- Introduced: #83 (closed 2026-08-25)
+- Migrated: 2026-08-25
+- Specification: Given the public example and documentation, a consuming site can discover activation, placement, configuration, supported options, defaults, and the distinction from the existing taxonomy-index cloud without copying theme files.
+- Tests:
+  - ✅ RT-83.19: The explicitly enabled example site exposes a working cloud through ordinary theme configuration and content.
+  - ⏳ UT-83.2: pending human resolution in delivery master #82.
+
+**Key:** ✅ passing · ⏳ pending · ❌ failing · ~~🚫 removed~~
