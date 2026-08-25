@@ -1,4 +1,4 @@
-<!-- Version: 1.6 | Last updated: 2026-07-18 -->
+<!-- Version: 1.7 | Last updated: 2026-08-25 -->
 
 # Frontmatter Reference
 
@@ -414,6 +414,25 @@ See `exampleSite/content/profile/_index.md` for a live demo.
 
 ---
 
+## Taxonomy term bundles
+
+A taxonomy term can have its own branch bundle—for example, `content/tags/theme/_index.md`. Its body content appears above the term's entries, and `list_style` can override the site-wide `params.termListStyle` presentation:
+
+```yaml
+---
+title: Theme
+list_style: cards  # list | cards
+---
+
+Articles about using and extending the theme.
+```
+
+Resolution uses the first supported value: term `list_style`, then site `termListStyle`, then `list`. An unsupported term value is ignored and falls through to the site setting; an unsupported site value falls through to `list`.
+
+`list` preserves the unpaginated title/date presentation and draft labels. `cards` uses the existing masonry card partial, filters `params.excludedTypes` before pagination, follows the site pager size, and loads only the masonry initializer. Term pages do not support the section-only `gallery`, `prose`, or carousel modes. This setting does not change the taxonomy index at `/tags/`.
+
+---
+
 ## Build control
 
 ```yaml
@@ -455,6 +474,7 @@ toc: true
 
 ## Changelog
 
+- **1.7** (2026-08-25): #84 documentation. Added taxonomy term-bundle content and the `list_style` list/cards override contract.
 - **1.6** (2026-07-18): Clarified review-enabled card and carousel metadata, semantic attribution styling, and site-level connector localization.
 - **1.5** (2026-07-17): Clarified media-aware review placement across banner, hero, featured, background, image-free, and column presentations.
 - **1.4** (2026-07-14): #78 documentation. Added layout-independent reviewed-item metadata, artwork, continuous ratings, item types, and list/card presentation behaviour.

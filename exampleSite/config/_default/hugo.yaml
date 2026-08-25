@@ -35,6 +35,9 @@ params:
     base: 0.75rem
     multiplier: 3
 
+  # Opt-in masonry presentation for taxonomy term pages such as /tags/theme/
+  termListStyle: cards
+
   # Background image defaults (all image-over-text contexts fall back to these)
   bgImage:
     opacity: 0.7          # image opacity (0.0-1.0, lower = darker)

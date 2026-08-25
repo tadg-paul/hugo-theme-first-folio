@@ -1,18 +1,51 @@
 {{/* Copyright (c) 2023 Taḋg Paul — SPDX-License-Identifier: Apache-2.0 */}}
 {{ define "main" }}
+{{- /* Resolve only supported values. Invalid term values fall through to the
+     site setting; invalid site values retain the compatibility default. */ -}}
+{{- $listStyle := "list" -}}
+{{- $siteListStyle := site.Params.termListStyle | default "" -}}
+{{- if in (slice "list" "cards") $siteListStyle -}}
+	{{- $listStyle = $siteListStyle -}}
+{{- end -}}
+{{- $termListStyle := .Params.list_style | default "" -}}
+{{- if in (slice "list" "cards") $termListStyle -}}
+	{{- $listStyle = $termListStyle -}}
+{{- end -}}
+
+{{- /* Filtering must precede pagination so excluded pages consume no card or
+     pager slots. List mode intentionally remains unpaginated. */ -}}
+{{- $excludedTypes := site.Params.excludedTypes | default (slice "page") -}}
+{{- $pages := slice -}}
+{{- range .Pages -}}
+	{{- if not (in $excludedTypes .Type) -}}
+		{{- $pages = $pages | append . -}}
+	{{- end -}}
+{{- end -}}
+
 {{ if isset .Data "Term" }}
 <h1>Entries tagged - "{{ .Data.Term }}"</h1>
 {{ else }}
 <h1 class="page-title">All articles</h1>
 {{ end }}
 
+{{- if .Content }}
+<div class="page-content">
+	{{ .Content }}
+</div>
+{{- end }}
+
+{{- if eq $listStyle "cards" -}}
+	{{- $paginator := .Paginate $pages -}}
+	{{ partial "masonry-grid.html" (dict "pages" $paginator.Pages "showSection" false "Site" .Site) }}
+	{{ partial "pagination.html" $paginator }}
+<script src="{{ "js/masonry-init.js" | relURL }}"></script>
+{{- else -}}
 <ul class="posts">
-	{{- range .Data.Pages -}}
-		{{- if (not (in (.Site.Params.excludedTypes | default (slice "page")) .Type)) -}}
+	{{- range $pages -}}
 		<li class="post">
 			<a href="{{ .RelPermalink }}">{{.Title}}</a> <span class="meta">{{ dateFormat (site.Params.dateFormatShort | default ":date_medium") .Date }}{{ if .Draft }} <span class="draft-label">DRAFT</span> {{ end }}</span>
 		</li>
-		{{- end -}}
 	{{- end -}}
 </ul>
+{{- end -}}
 {{ end }}

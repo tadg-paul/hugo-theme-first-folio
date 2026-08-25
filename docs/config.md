@@ -1,4 +1,4 @@
-<!-- Version: 1.5 | Last updated: 2026-08-25 -->
+<!-- Version: 1.6 | Last updated: 2026-08-25 -->
 
 # Configuration Reference
 
@@ -515,6 +515,25 @@ Default `["page"]` (pages of type `page` are excluded from tag/term listings, so
 
 ---
 
+## Taxonomy term-page presentation
+
+Controls how the pages belonging to one taxonomy term—such as `/tags/theme/`—are presented.
+
+```yaml
+params:
+  termListStyle: cards  # list | cards
+```
+
+| Key | Default | Description |
+|---|---|---|
+| `termListStyle` | `list` | Site-wide term-page presentation. `list` preserves the unpaginated title/date list; `cards` uses the theme masonry cards and site pager size. |
+
+Only `list` and `cards` are supported. Unsupported values are ignored, so an invalid site value resolves to the backwards-compatible `list` default rather than activating cards. A term bundle can override the site value with `list_style`; see [Frontmatter Reference](frontmatter.md#taxonomy-term-bundles).
+
+Both presentations render term-bundle content above the entries and apply `excludedTypes` before rendering. Cards filter before pagination, load the masonry initializer, and do not add carousel behavior. The `/tags/` taxonomy index and its existing tag cloud are unaffected.
+
+---
+
 ## Tag cloud
 
 Enables the reusable weighted taxonomy cloud. It is disabled by default, so upgrading the theme does not add markup or CSS to an existing site. Enabling it makes the component available; the cloud still appears only where a page calls the `tagcloud` shortcode or a template calls the `tagcloud.html` partial.
@@ -611,6 +630,7 @@ See `exampleSite/config/_default/hugo.yaml` for a complete working configuration
 
 ## Changelog
 
+- **1.6** (2026-08-25): #84 documentation. Added the backwards-compatible list/cards contract for taxonomy term pages, including precedence, filtering, and pagination behavior.
 - **1.5** (2026-08-25): #83 documentation. Added the opt-in tag-cloud activation and site-wide sizing contract.
 - **1.4** (2026-07-18): #79 documentation. Added localized review-attribution connectors and clarified retained section metadata on review-enabled cards and carousel items.
 - **1.3** (2026-07-14): #78 documentation. Added review rating defaults and the independent masonry/carousel review metadata controls.
