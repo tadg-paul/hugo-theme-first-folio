@@ -167,6 +167,14 @@
 	<!-- Configurable unordered-list bullet glyph -->
 	{{- partial "bullet-config.html" . -}}
 
+	{{- /* Generic tag-cloud styling is opt-in with the component itself. */ -}}
+	{{- if .Site.Params.tagcloud.enabled | default false -}}
+		{{- with resources.Get "css/tagcloud.css" -}}
+		{{- $tagcloudStyle := . | fingerprint -}}
+	<link rel="stylesheet" type="text/css" href="{{ $tagcloudStyle.RelPermalink }}">
+		{{- end -}}
+	{{- end -}}
+
 	<!-- Custom CSS style get applied last -->
 	{{- if isset .Site.Params "customcss" }}
 		{{ range .Site.Params.customCSS }}

@@ -1,8 +1,8 @@
-<!-- Version: 1.6 | Last updated: 2026-07-14 -->
+<!-- Version: 1.7 | Last updated: 2026-08-25 -->
 
 # Shortcodes Reference
 
-The First Folio theme provides 20 custom shortcodes for varied content types.
+The First Folio theme provides 21 custom shortcodes for varied content types.
 
 ## Table of Contents
 
@@ -22,9 +22,10 @@ The First Folio theme provides 20 custom shortcodes for varied content types.
 14. [formspree](#formspree) - Formspree-backed contact form
 15. [rawhtml](#rawhtml) - Raw HTML pass-through
 16. [section-list](#section-list) - Section navigation list
-17. [img](#img) - Inline image with responsive thumbnails
-18. [gallery](#gallery) - Image gallery with lightbox
-19. [side-by-side](#side-by-side) - Side-by-side content wrapper
+17. [tagcloud](#tagcloud) - Opt-in weighted taxonomy cloud
+18. [img](#img) - Inline image with responsive thumbnails
+19. [gallery](#gallery) - Image gallery with lightbox
+20. [side-by-side](#side-by-side) - Side-by-side content wrapper
 
 ---
 
@@ -774,6 +775,61 @@ See [live example on the demo site](https://demo.theme.tadg.ie/journal/shortcode
 
 ---
 
+## tagcloud
+
+Renders terms from a Hugo taxonomy as a responsive weighted cloud. Term size represents its page count; each term receives a stable colour derived from its name and follows the theme's light or dark ambience.
+
+The component is opt-in. Set `params.tagcloud.enabled: true` before placing the shortcode. When the setting is absent or false, the shortcode emits nothing and the theme does not load `tagcloud.css`.
+
+### Parameters
+
+| Parameter | Required | Default | Description |
+|---|---|---|---|
+| `taxonomy` | No | `tags` | Taxonomy key to render, such as `series`. An absent or unknown taxonomy emits nothing. |
+| `sort` | No | `alpha` | `alpha` for alphabetical display or `count` for descending frequency. |
+| `scale` | No | `log` | `log` or `linear` frequency scaling. Logarithmic scaling gives long-tail taxonomies more visible size variation. |
+| `minCount` | No | `1` | Exclude terms used fewer than this many times. |
+| `limit` | No | `0` | Keep the most-used N terms; `0` renders all eligible terms. |
+| `counts` | No | `false` | Set to `true` to show each term's page count. |
+| `pack` | No | `rows` | `rows`, `columns`, or `float` layout. Rows preserve ordinary reading order; columns pack vertically; float lets the largest terms lead the flow. |
+| `floatTop` | No | `1` | In float packing, number of highest-ranked terms to float. |
+| `leadTop` | No | `floatTop` | In float packing, number of highest-ranked terms moved to the start of document order. |
+| `maxLines` | No | `2` | Maximum lines for long terms. Use `1` to prevent wrapping. |
+| `wrapOver` | No | `15` | Apply the line-width cap only to terms longer than this character count. |
+
+Term sizing is intentionally not configurable per call. Set the site-wide floor and maximum ratio with `params.tagcloud.base` and `params.tagcloud.multiplier`; see [Configuration Reference](config.md#tag-cloud).
+
+### Usage
+
+```yaml
+# hugo.yaml
+params:
+  tagcloud:
+    enabled: true
+    base: 0.75rem
+    multiplier: 3
+```
+
+```markdown
+{{< tagcloud >}}
+{{< tagcloud taxonomy="series" sort="count" minCount="2" limit="20" counts="true" >}}
+{{< tagcloud limit="24" pack="rows" >}}
+```
+
+Templates can reuse the same implementation directly:
+
+```go-html-template
+{{ partial "tagcloud.html" (dict "page" . "taxonomy" "tags" "limit" 24) }}
+```
+
+The enable switch applies to direct partial calls as well as the shortcode.
+
+### Live Demo
+
+The example site's homepage enables and renders a 24-term row-packed tag cloud.
+
+---
+
 ## img
 
 Inline image for embedding within article text. Generates responsive thumbnails with WebP support, matching gallery behaviour.
@@ -880,6 +936,7 @@ See [live example on the demo site](https://demo.theme.tadg.ie/journal/shortcode
 
 ## Changelog
 
+- **1.7** (2026-08-25): #83 documentation. Added the opt-in `tagcloud` shortcode, its template partial, parameters, sizing configuration, and example-site placement.
 - **1.6** (2026-07-14): #76 documentation. Changed the block spoiler label to a full-width control with centred text.
 - **1.5** (2026-07-14): #76 documentation. Documented inherited mask colour, configurable opacity, the upper-left block label, and revealed-text re-conceal behaviour.
 - **1.4** (2026-07-14): Replaced filled spoiler masks with low-opacity symbol patterns, kept block labels visible before reveal, and clarified the concealed accessibility state.

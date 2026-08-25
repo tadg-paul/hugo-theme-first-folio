@@ -14,3 +14,7 @@ sidebar:
 
     Built with [Hugo](https://gohugo.io) and the [First Folio theme](https://github.com/tigger-developer/hugo-theme-first-folio).
 ---
+
+## Explore by tag
+
+{{< tagcloud limit="24" pack="rows" >}}

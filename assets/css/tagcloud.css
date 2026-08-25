@@ -1,0 +1,278 @@
+/* ABOUTME: Styling for the tagcloud shortcode. The template emits weight, count and hue; everything visual is here.
+   ABOUTME: Neutral colours come from the theme's custom properties so the cloud follows light and dark ambience. */
+
+.tagcloud {
+  /* Size model: the least-used term renders at --tagcloud-base, the most-used
+     at base x --tagcloud-multiplier.
+
+     Mobile first, matching the theme's own --font-size-base, which starts small
+     and steps up at 48rem. Narrow screens need the ratio compressed as well as
+     the base: the largest term is base x multiplier, so reaching a sensible
+     mobile size by shrinking the base alone would drive the long tail of
+     one-article tags below legibility. Hence both step together below.
+
+     The base is the floor as well as the unit -- 0.7rem is around 11px at
+     default settings, and going lower to buy a larger ratio is a false economy.
+
+     These are fallbacks only. params.tagcloud.base and .multiplier in site
+     configuration override them, emitted as custom properties on the list. */
+  --tagcloud-base: 0.75rem;
+  --tagcloud-multiplier: 3;
+
+  /* How much of the configured ratio applies at this viewport. The configured
+     size is the wide-screen intent; narrow screens flatten the contrast rather
+     than shrinking everything, which would take the long tail of one-article
+     tags below legibility. Amplitude scales the spread, not the floor. */
+  --tagcloud-amplitude: 0.5;
+
+  /* Colour model: hue comes from the term, saturation and lightness from here,
+     so contrast stays even across the whole cloud. */
+  --tagcloud-saturation: 62%;
+  --tagcloud-lightness: 90%;
+  --tagcloud-lightness-hover: 82%;
+
+  /* Height the column packing is allowed to reach before starting a new
+     column. Only used by the columns variant. Higher means fewer, taller
+     columns, and so a narrower cloud overall. */
+  --tagcloud-pack-height: 12rem;
+
+  /* Bubble padding, in em so it scales with each term. The font-size sits on
+     the term itself, so em resolves against that term's own size and every
+     bubble keeps the same proportions -- the collar is a constant fraction of
+     the type rather than a constant number of pixels.
+
+     The trade is that a term rendered three times larger wears three times the
+     collar, so the largest terms take more width than fixed padding would give
+     them. Switch to rem here if that ever matters more than the proportions. */
+  --tagcloud-pad-y: 0.25em;
+  --tagcloud-pad-x: 0.6em;
+
+  /* Space between bubbles, deliberately in rem rather than em. This is the
+     cloud's rhythm and belongs to the cloud, not to whichever term happens to
+     sit either side of it -- a fixed gap keeps the spacing even where a 0.75rem
+     term meets a 2.25rem one. The float carries a little more, since content
+     flowing around it has no gap of its own on that edge. */
+  --tagcloud-gap: 0.3rem;
+  --tagcloud-float-gap: 0.5rem;
+
+  display: flex;
+  gap: var(--tagcloud-gap);
+
+  /* The theme sets `ul { padding-inline-start: 2ch }` and `ul li
+     { text-indent: -2ch }` so its injected bullet can hang into the margin.
+     Both must be undone or every term is drawn two characters left of its own
+     box, overlapping the term before it. */
+  margin: 0;
+  padding: 0;
+  padding-inline-start: 0;
+  list-style: none;
+}
+
+/* Step up on wider screens, at the same 48rem the theme uses for its own base
+   type size. Both the base and the ratio grow: there is room for the contrast. */
+@media screen and (min-width: 48rem) {
+  .tagcloud {
+    --tagcloud-amplitude: 1;
+    --tagcloud-gap: 0.4rem;
+  }
+}
+
+/* Rows: terms flow left to right and wrap. Simple, but a term tall enough to
+   wrap sets its whole row's height, leaving dead space above and below every
+   neighbour on that row. Flex items on a line always share the line's height;
+   nothing short of masonry changes that. */
+.tagcloud--rows {
+  flex-flow: row wrap;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Columns: terms stack downward and start a new column on reaching the pack
+   height, so short terms fill the space beside a tall one.
+
+   Two costs, both structural. Reading order becomes column-major. And because
+   column wrap takes a height and derives a width, the container grows as wide
+   as the columns require -- it cannot be told to fit its parent. Raising
+   --tagcloud-pack-height yields fewer, taller columns and so a narrower
+   result; that is the only lever. Verify at the viewports you care about. */
+.tagcloud--columns {
+  flex-flow: column wrap;
+  align-items: flex-start;
+  align-content: center;
+  max-height: var(--tagcloud-pack-height);
+  max-width: 100%;
+}
+
+/* Float: the largest terms are taken out of the inline flow, and the rest
+   flows around them -- beside and then beneath, which is the one pure-CSS way
+   to fill the space a tall term would otherwise waste. Requires the floated
+   terms to come first in document order, which the partial arranges. */
+.tagcloud--float {
+  display: block;
+  /* Left, not centred. Inline content beside a float is centred within the
+     space remaining next to it, so each line gains equal slack at both ends --
+     which appears as a gap belonging to the float, because the float is what
+     it is measured against. Flush left removes it. */
+  text-align: left;
+}
+
+.tagcloud--float > .tagcloud-term {
+  /* Half the gap on each side, so two neighbours together make one full gap
+     and match the rows and columns variants. */
+  margin: 0 calc(var(--tagcloud-gap) / 2) var(--tagcloud-gap);
+  vertical-align: middle;
+}
+
+.tagcloud--float > .tagcloud-term--float {
+  float: left;
+  margin-right: var(--tagcloud-float-gap);
+}
+
+/* Contain the floats so the cloud does not collapse to zero height. */
+.tagcloud--float::after {
+  content: "";
+  display: block;
+  clear: both;
+}
+
+.tagcloud > .tagcloud-term {
+  /* The size lives on the term, not on the link inside it, so that em-based
+     padding resolves against the term's own size and scales with it. Setting
+     the size on the link left every bubble with identical padding, which
+     flattened the difference between a one-article tag and a sixteen. */
+  font-size: calc(
+    var(--tagcloud-base) *
+      (1 + var(--tagcloud-weight, 0) * (var(--tagcloud-multiplier) - 1) *
+        var(--tagcloud-amplitude))
+  );
+  font-weight: calc(400 + var(--tagcloud-weight, 0) * 250);
+
+  position: relative;
+  display: inline-flex;
+  /* Centre, not baseline. Baseline alignment sizes the container to the line
+     box, so a line-height under 1 crops it tighter than the glyphs and the
+     text overflows its own pill. */
+  align-items: center;
+  /* Flex defaults to flex-start, so any difference between the box width and
+     the text width collects entirely on the right. Centring makes the box
+     symmetric whenever the ch-derived cap does not land exactly on the text. */
+  justify-content: center;
+  margin: 0;
+  padding: var(--tagcloud-pad-y) var(--tagcloud-pad-x);
+  text-indent: 0;
+
+  /* Width is derived per term: the template supplies the characters a line may
+     hold to fit the term in the configured number of lines, and ch converts
+     that to a real width in the site's own typeface. At one line the template
+     emits nothing, and the fallback is large enough to impose no cap at all --
+     a cap near the natural width leaves slack the flexbox has to put somewhere. */
+  max-width: calc(var(--tagcloud-line-ch, 999) * 1ch + var(--tagcloud-pad-x) * 2);
+  text-align: center;
+
+  overflow-wrap: break-word;
+
+  background: hsl(var(--tagcloud-hue, 0) var(--tagcloud-saturation) var(--tagcloud-lightness));
+  border-radius: 999px;
+  transition: background-color 0.15s ease;
+}
+
+/* A capped term needs the cap to decide where the text breaks, but not to set
+   the box width: a ch-derived cap never lands exactly on the rendered text, and
+   the surplus shows as padding the term has not got. min-content collapses the
+   box back onto its longest line once the break has been decided, so a wrapped
+   term hugs its text exactly as an uncapped one does. */
+.tagcloud > .tagcloud-term--wrapped {
+  width: min-content;
+}
+
+/* The theme injects a bullet on every list item; a cloud must not carry one. */
+.tagcloud > .tagcloud-term::before,
+.tagcloud > .tagcloud-term::marker {
+  content: none;
+}
+
+.tagcloud > .tagcloud-term:hover,
+.tagcloud > .tagcloud-term:focus-within {
+  background: hsl(var(--tagcloud-hue, 0) var(--tagcloud-saturation) var(--tagcloud-lightness-hover));
+}
+
+.tagcloud-link {
+  /* Inherits size and weight from the term so the bubble and its text scale
+     together. */
+  font-size: inherit;
+
+  /* A wrapped term takes its width from its longest line, so a short second
+     line sits centred with slack either side that reads as padding it does
+     not have. Balancing evens the lines out and the slack largely goes.
+     Tight leading keeps a two-line bubble from towering over one-line ones. */
+  text-wrap: balance;
+  /* Must stay at or above 1: below that the line box is shorter than the
+     glyphs it contains and the text spills out of the pill. */
+  line-height: 1.15;
+  color: hsl(var(--tagcloud-hue, 0) 45% 22%);
+  text-decoration: none;
+}
+
+.tagcloud > .tagcloud-term:hover .tagcloud-link {
+  text-decoration: underline;
+}
+
+/* Positioned out of flow, inside the term's own padding, so showing counts
+   costs no horizontal space. Size stays absolute rather than em: scaling it
+   with the term would put the least-used tags' figures under 7px. */
+.tagcloud-count {
+  position: absolute;
+  top: 0.15em;
+  right: 0.4em;
+  font-size: 0.58rem;
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
+  color: hsl(var(--tagcloud-hue, 0) 30% 35%);
+  opacity: 0.7;
+}
+
+/* Dark ambience: invert the lightness relationship rather than the hue, so a
+   tag keeps its identity in both modes.
+
+   The hook is the theme's own data-theme attribute, not prefers-color-scheme.
+   The ambience toggle sets data-theme on <html> and enables or disables
+   dark.css; it does not touch the OS preference. Keying off the media query
+   means the cloud follows the operating system while the rest of the page
+   follows the toggle, so the two disagree the moment a reader switches. */
+html[data-theme="dark"] .tagcloud {
+  --tagcloud-saturation: 40%;
+  --tagcloud-lightness: 24%;
+  --tagcloud-lightness-hover: 32%;
+}
+
+html[data-theme="dark"] .tagcloud-link {
+  color: hsl(var(--tagcloud-hue, 0) 70% 86%);
+}
+
+html[data-theme="dark"] .tagcloud-count {
+  color: hsl(var(--tagcloud-hue, 0) 35% 72%);
+}
+
+/* Fallback for the brief moment before the toggle script runs, and for readers
+   with JavaScript disabled, where no data-theme attribute is ever set. */
+@media (prefers-color-scheme: dark) {
+  html:not([data-theme]) .tagcloud {
+    --tagcloud-saturation: 40%;
+    --tagcloud-lightness: 24%;
+    --tagcloud-lightness-hover: 32%;
+  }
+
+  html:not([data-theme]) .tagcloud-link {
+    color: hsl(var(--tagcloud-hue, 0) 70% 86%);
+  }
+
+  html:not([data-theme]) .tagcloud-count {
+    color: hsl(var(--tagcloud-hue, 0) 35% 72%);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .tagcloud > .tagcloud-term {
+    transition: none;
+  }
+}

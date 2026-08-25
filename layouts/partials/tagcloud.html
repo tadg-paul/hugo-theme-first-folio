@@ -1,0 +1,195 @@
+{{- /* ABOUTME: Renders a taxonomy as a weighted word cloud; callable from any template or via the shortcode. */ -}}
+{{- /* ABOUTME: Emits data only -- weight, count and hue. Every visual decision belongs to the stylesheet. */ -}}
+{{- /*
+  Usage from a template:
+    {{ partial "tagcloud.html" (dict "page" .) }}
+    {{ partial "tagcloud.html" (dict "page" . "taxonomy" "series" "minCount" 2 "multiplier" "3") }}
+
+  Usage from content: the tagcloud shortcode, which passes its parameters here.
+
+  Options, all optional except page:
+
+    page        The page context. Required for permalinks.
+
+  Functional -- these select the data or transform its weight:
+    taxonomy    Taxonomy to render.                          Default "tags"
+    sort        "alpha" reads as a cloud, "count" as a rank. Default "alpha"
+    scale       "log" or "linear". Tag frequencies are
+                Zipf-like, so a linear scale collapses the
+                long tail into the smallest size and only
+                the outliers read. Log is the standard.      Default "log"
+    minCount    Drop terms used fewer than this many times.  Default 1
+    limit       Keep only the N most-used terms, 0 for all.  Default 0
+    pack        "rows" lays terms out in wrapping rows: simple, but a term
+                tall enough to wrap leaves dead space above and below every
+                neighbour on its row, because flex items share a line's
+                height. "columns" stacks terms down columns instead, so short
+                terms pack into the space beside a tall one. The cost is
+                column-major reading order.                  Default "rows"
+    maxLines    Lines a term may occupy. 1 never wraps, so long compound
+                terms stay on one line and take the width; 2 or more lets
+                them break and trade width for height. The template emits
+                each term's characters-per-line and the stylesheet turns that
+                into a width with the ch unit, so the wrap point follows the
+                site's actual typeface rather than a guess.  Default 2
+    counts      Show each term's article count. Off by
+                default: size already encodes frequency, so
+                the figure is redundant and costs width on
+                every term. When on it is rendered as a
+                superscript inside the term's own padding,
+                so it still takes no horizontal space.       Default false
+
+  Sizing is not a per-call option. It comes from site configuration:
+
+    params.tagcloud.base        Size of the least-used term, any CSS length.
+    params.tagcloud.multiplier  The most-used term renders at base x this.
+
+  One home, site-wide, so every cloud on the site agrees. The stylesheet
+  supplies fallbacks when the keys are absent.
+
+  Each term carries:
+    --tagcloud-weight  frequency normalised 0 to 1 across the rendered set
+    --tagcloud-hue     a stable hue hashed from the term, 0 to 359
+
+  The hue derives from the term itself, so a tag keeps the same colour across
+  builds and across pages. The stylesheet decides whether to use it at all.
+*/ -}}
+
+{{- if site.Params.tagcloud.enabled | default false -}}
+{{- $page := .page -}}
+{{- $taxonomy := .taxonomy | default "tags" -}}
+{{- $sort := .sort | default "alpha" -}}
+{{- $scale := .scale | default "log" -}}
+{{- $minCount := int (.minCount | default 1) -}}
+{{- $limit := int (.limit | default 0) -}}
+{{- /* Shortcode named parameters may arrive as strings. Normalize here so
+       counts="false" does not become truthy merely because it is non-empty. */ -}}
+{{- $counts := false -}}
+{{- with .counts -}}
+  {{- $counts = eq (lower (printf "%v" .)) "true" -}}
+{{- end -}}
+{{- $pack := .pack | default "rows" -}}
+{{- $floatTop := int (.floatTop | default 1) -}}
+{{- /* Terms hoisted to the front of document order. Defaults to the number
+       floated, but may exceed it: a term that leads the inline flow without
+       floating sits alongside the float, and the terms after it stack
+       beneath, filling the float's remaining height. */ -}}
+{{- $leadTop := int (.leadTop | default $floatTop) -}}
+{{- $maxLines := int (.maxLines | default 2) -}}
+{{- /* Only terms longer than this are given a width cap. Without a threshold
+       the line budget applies to every term, so a six-character term is capped
+       at three characters and overflows its own bubble. */ -}}
+{{- $wrapOver := int (.wrapOver | default 15) -}}
+{{- /* Sizing comes from site configuration, never from the call site. */ -}}
+{{- $base := site.Params.tagcloud.base -}}
+{{- $multiplier := site.Params.tagcloud.multiplier -}}
+
+{{- $terms := index site.Taxonomies $taxonomy -}}
+
+{{- with $terms -}}
+  {{- /* ByCount is descending, so filtering and limiting both work from the head. */ -}}
+  {{- $ranked := slice -}}
+  {{- range .ByCount -}}
+    {{- if ge .Count $minCount -}}
+      {{- $ranked = $ranked | append . -}}
+    {{- end -}}
+  {{- end -}}
+  {{- if gt $limit 0 -}}
+    {{- $ranked = first (math.Min $limit (len $ranked)) $ranked -}}
+  {{- end -}}
+
+  {{- /* ByCount leaves equally-used terms in an arbitrary order, which makes
+         rank 1 a coin toss whenever the top two tie. Break ties on term length,
+         longest first: the longer term is the one that shapes the layout, so it
+         is the one worth floating. Composite key keeps the sort to one pass. */ -}}
+  {{- $keyed := slice -}}
+  {{- range $ranked -}}
+    {{- $keyed = $keyed | append (dict "entry" . "key" (add (mul .Count 1000) (len .Term))) -}}
+  {{- end -}}
+  {{- $ordered := slice -}}
+  {{- range sort $keyed "key" "desc" -}}
+    {{- $ordered = $ordered | append .entry -}}
+  {{- end -}}
+  {{- $ranked = $ordered -}}
+
+  {{- if $ranked -}}
+    {{- /* Normalise against the range actually rendered, not the whole taxonomy,
+           so a filtered or limited cloud still spans the full size range. */ -}}
+    {{- $maxCount := (index $ranked 0).Count -}}
+    {{- $minRendered := (index $ranked (sub (len $ranked) 1)).Count -}}
+
+    {{- $lowerBound := float $minRendered -}}
+    {{- $upperBound := float $maxCount -}}
+    {{- if eq $scale "log" -}}
+      {{- $lowerBound = math.Log (float $minRendered) -}}
+      {{- $upperBound = math.Log (float $maxCount) -}}
+    {{- end -}}
+    {{- $span := sub $upperBound $lowerBound -}}
+
+    {{- /* Frequency rank, captured before any reordering, so a stylesheet can
+           trim the tail responsively without depending on document order. */ -}}
+    {{- $rank := dict -}}
+    {{- range $i, $entry := $ranked -}}
+      {{- $rank = merge $rank (dict $entry.Term (add $i 1)) -}}
+    {{- end -}}
+
+    {{- $display := $ranked -}}
+    {{- if eq $sort "alpha" -}}
+      {{- $display = sort $ranked ".Term" -}}
+    {{- end -}}
+
+    {{- /* Float packing depends on document order: inline content only flows
+           around a float that precedes it. So the terms that will be floated
+           are hoisted to the front, whatever the display sort. */ -}}
+    {{- if eq $pack "float" -}}
+      {{- $lead := slice -}}
+      {{- $rest := slice -}}
+      {{- range $display -}}
+        {{- if le (index $rank .Term) $leadTop -}}
+          {{- $lead = $lead | append . -}}
+        {{- else -}}
+          {{- $rest = $rest | append . -}}
+        {{- end -}}
+      {{- end -}}
+      {{- /* Within the lead group, restore rank order, so the floated terms
+             come before the ones merely leading the inline flow. */ -}}
+      {{- $byRank := slice -}}
+      {{- range $ranked -}}
+        {{- $term := .Term -}}
+        {{- range $lead -}}
+          {{- if eq .Term $term -}}{{ $byRank = $byRank | append . }}{{- end -}}
+        {{- end -}}
+      {{- end -}}
+      {{- $lead = $byRank -}}
+      {{- $display = $lead | append $rest -}}
+    {{- end -}}
+
+    {{- $style := slice -}}
+    {{- with $base }}{{ $style = $style | append (printf "--tagcloud-base: %s;" .) }}{{ end -}}
+    {{- /* %v not %s: multiplier arrives from YAML as a number, and %s renders a
+           Go type error into the stylesheet rather than the value. */ -}}
+    {{- with $multiplier }}{{ $style = $style | append (printf "--tagcloud-multiplier: %v;" .) }}{{ end -}}
+
+    <ul class="tagcloud tagcloud--{{ $pack }}" data-taxonomy="{{ $taxonomy }}"
+      {{- with $style }} style="{{ delimit . " " | safeCSS }}"{{ end }}>
+      {{- range $display -}}
+        {{- $position := float .Count -}}
+        {{- if eq $scale "log" -}}
+          {{- $position = math.Log (float .Count) -}}
+        {{- end -}}
+        {{- $weight := 1.0 -}}
+        {{- if gt $span 0.0 -}}
+          {{- $weight = div (sub $position $lowerBound) $span -}}
+        {{- end -}}
+        {{- $capped := and (gt $maxLines 1) (gt (len .Term) $wrapOver) -}}
+        <li class="tagcloud-term{{ if and (eq $pack "float") (le (index $rank .Term) $floatTop) }} tagcloud-term--float{{ end }}{{ if $capped }} tagcloud-term--wrapped{{ end }}"
+            data-rank="{{ index $rank .Term }}"
+            style="--tagcloud-weight: {{ printf "%.3f" $weight }}; --tagcloud-hue: {{ mod (hash.FNV32a .Term) 360 }}; {{ if $capped }}--tagcloud-line-ch: {{ math.Ceil (div (float (len .Term)) $maxLines) }};{{ end }}">
+          <a class="tagcloud-link" href="{{ .Page.RelPermalink }}">{{ .Term }}</a>
+          {{- if $counts }}<span class="tagcloud-count" aria-hidden="true">{{ .Count }}</span>{{ end -}}
+        </li>
+      {{- end -}}
+    </ul>
+  {{- end -}}
+{{- end -}}
+{{- end -}}

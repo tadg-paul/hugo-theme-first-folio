@@ -1,4 +1,4 @@
-<!-- Version: 1.4 | Last updated: 2026-07-18 -->
+<!-- Version: 1.5 | Last updated: 2026-08-25 -->
 
 # Configuration Reference
 
@@ -515,6 +515,28 @@ Default `["page"]` (pages of type `page` are excluded from tag/term listings, so
 
 ---
 
+## Tag cloud
+
+Enables the reusable weighted taxonomy cloud. It is disabled by default, so upgrading the theme does not add markup or CSS to an existing site. Enabling it makes the component available; the cloud still appears only where a page calls the `tagcloud` shortcode or a template calls the `tagcloud.html` partial.
+
+```yaml
+params:
+  tagcloud:
+    enabled: true
+    base: 0.75rem
+    multiplier: 3
+```
+
+| Key | Default | Description |
+|---|---|---|
+| `enabled` | `false` | Enables tag-cloud rendering and loads its fingerprinted stylesheet. |
+| `base` | `0.75rem` | CSS size of the least-used rendered term. Accepts any CSS length. |
+| `multiplier` | `3` | Maximum term size as a multiple of `base`. |
+
+Sizing is site-wide so clouds remain visually consistent. Data selection, sorting, packing, and optional counts belong to each shortcode or partial call; see [Shortcodes Reference](shortcodes.md#tagcloud).
+
+---
+
 ## Other settings
 
 ```yaml
@@ -589,6 +611,7 @@ See `exampleSite/config/_default/hugo.yaml` for a complete working configuration
 
 ## Changelog
 
+- **1.5** (2026-08-25): #83 documentation. Added the opt-in tag-cloud activation and site-wide sizing contract.
 - **1.4** (2026-07-18): #79 documentation. Added localized review-attribution connectors and clarified retained section metadata on review-enabled cards and carousel items.
 - **1.3** (2026-07-14): #78 documentation. Added review rating defaults and the independent masonry/carousel review metadata controls.
 - **1.2** (2026-07-14): #76 documentation. Added `params.spoiler.opacity` and documented inherited spoiler mask colour.

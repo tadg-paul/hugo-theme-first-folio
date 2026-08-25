@@ -1,0 +1,24 @@
+{{- /* ABOUTME: Content-facing wrapper around the tagcloud partial. */ -}}
+{{- /* ABOUTME: Holds no logic: the partial is the single implementation, callable from templates too. */ -}}
+{{- /*
+  Usage:
+    {{< tagcloud >}}
+    {{< tagcloud taxonomy="series" scale="linear" minCount="2" limit="20" >}}
+  Requires params.tagcloud.enabled: true. The disabled default emits nothing.
+  Sizing is not a shortcode parameter: it comes from params.tagcloud in site
+  configuration. See layouts/partials/tagcloud.html for the full reference.
+*/ -}}
+{{- partial "tagcloud.html" (dict
+  "page" .Page
+  "taxonomy" (.Get "taxonomy")
+  "sort" (.Get "sort")
+  "scale" (.Get "scale")
+  "minCount" (.Get "minCount")
+  "limit" (.Get "limit")
+  "counts" (.Get "counts")
+  "pack" (.Get "pack")
+  "floatTop" (.Get "floatTop")
+  "leadTop" (.Get "leadTop")
+  "maxLines" (.Get "maxLines")
+  "wrapOver" (.Get "wrapOver")
+) -}}
