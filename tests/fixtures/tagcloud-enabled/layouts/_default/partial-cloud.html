@@ -1,0 +1,7 @@
+{{- /* ABOUTME: Exercises direct template use of the tag-cloud partial. */ -}}
+{{- /* ABOUTME: The rendered route proves the partial and header asset gate integrate. */ -}}
+{{ define "main" }}
+<main>
+  {{ partial "tagcloud.html" (dict "page" .) }}
+</main>
+{{ end }}

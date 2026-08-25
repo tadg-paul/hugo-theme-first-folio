@@ -1,0 +1,16 @@
+# ABOUTME: Configures the enabled tag-cloud regression fixture.
+# ABOUTME: Supplies several taxonomies and explicit site-wide cloud sizing.
+baseURL: /
+languageCode: en-GB
+title: Tagcloud Enabled Fixture
+
+taxonomies:
+  tag: tags
+  series: series
+  topic: topics
+
+params:
+  tagcloud:
+    enabled: true
+    base: 0.8rem
+    multiplier: 2.5

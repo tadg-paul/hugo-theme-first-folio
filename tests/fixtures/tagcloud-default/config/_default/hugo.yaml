@@ -1,0 +1,8 @@
+# ABOUTME: Configures a fixture with no generic tag-cloud enable key.
+# ABOUTME: It also protects the existing taxonomy-index cloud presentation.
+baseURL: /
+languageCode: en-GB
+title: Tagcloud Default Fixture
+
+taxonomies:
+  tag: tags

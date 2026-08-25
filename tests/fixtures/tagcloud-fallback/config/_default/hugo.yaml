@@ -1,0 +1,12 @@
+# ABOUTME: Configures an enabled cloud without site-wide size overrides.
+# ABOUTME: Rendered output must defer to the delivered stylesheet defaults.
+baseURL: /
+languageCode: en-GB
+title: Tagcloud Fallback Fixture
+
+taxonomies:
+  tag: tags
+
+params:
+  tagcloud:
+    enabled: true

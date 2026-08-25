@@ -1,0 +1,7 @@
+{{- /* ABOUTME: Exercises direct partial placement while tag-cloud output is disabled. */ -}}
+{{- /* ABOUTME: The route must remain free of generic cloud markup. */ -}}
+{{ define "main" }}
+<main>
+  {{ partial "tagcloud.html" (dict "page" .) }}
+</main>
+{{ end }}

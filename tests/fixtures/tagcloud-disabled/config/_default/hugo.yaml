@@ -1,0 +1,12 @@
+# ABOUTME: Configures a fixture with the generic tag cloud explicitly disabled.
+# ABOUTME: Both shortcode and partial placement must remain inert.
+baseURL: /
+languageCode: en-GB
+title: Tagcloud Disabled Fixture
+
+taxonomies:
+  tag: tags
+
+params:
+  tagcloud:
+    enabled: false
