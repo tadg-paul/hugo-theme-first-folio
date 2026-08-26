@@ -36,3 +36,15 @@ example_polish_tagcloud_css() {
     printf '%s/%s\n' "$build_dir" "${href#/}"
 }
 
+example_polish_theme_css() {
+    local page="$1"
+    local build_dir
+    local href
+    build_dir="$(dirname "$page")"
+    href="$(htmlq -f "$page" -a href 'link[rel="stylesheet"][href*="theme."]')"
+    if [[ -z "$href" ]]; then
+        printf '    rendered example page has no fingerprinted theme stylesheet\n' >&2
+        return 1
+    fi
+    printf '%s/%s\n' "$build_dir" "${href#/}"
+}
