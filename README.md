@@ -20,7 +20,7 @@ The result is a theme that handles image galleries with EXIF metadata and lightb
 
 **21 shortcodes.** Callout boxes, collapsible details, block quotes with decorative marks, expandable quotes, poetry formatting, play dialogue and stage directions, an opt-in weighted taxonomy cloud, inline images with responsive thumbnails and WebP, image galleries, side-by-side layouts, video embeds, contact forms with CAPTCHA, and more. Each is documented in the [shortcode reference](docs/shortcodes.md), with examples on the [demo site](https://demo.theme.tadg.ie/journal/shortcode-showcase/).
 
-**Taxonomy browsing.** Term pages preserve their unpaginated title/date list by default, or can opt into the established paginated masonry cards site-wide or per term. Term-bundle content, excluded-type filtering, precedence, and supported values are documented in the [configuration](docs/config.md#taxonomy-term-page-presentation) and [frontmatter](docs/frontmatter.md#taxonomy-term-bundles) references.
+**Taxonomy browsing.** Term pages preserve their unpaginated title/date list by default, or can opt into paginated section-style summary rows or masonry cards site-wide or per term. Term-bundle content, excluded-type filtering, precedence, and supported values are documented in the [configuration](docs/config.md#taxonomy-term-page-presentation) and [frontmatter](docs/frontmatter.md#taxonomy-term-bundles) references.
 
 **Navigation and CTAs.** Breadcrumb trails with section hierarchy, author, and date. Signpost bars for calls to action - configurable per page or cascaded across entire sections. Table of contents as a sticky sidebar on desktop, collapsible on mobile.
 

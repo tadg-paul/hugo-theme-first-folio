@@ -40,8 +40,8 @@ params:
   navigation:
     style: buttons        # links | buttons
 
-  # Opt-in masonry presentation for taxonomy term pages such as /tags/theme/
-  termListStyle: cards
+  # Taxonomy term pages such as /tags/reference/: list | summary | cards
+  termListStyle: summary
 
   # Background image defaults (all image-over-text contexts fall back to these)
   bgImage:

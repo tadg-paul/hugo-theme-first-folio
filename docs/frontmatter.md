@@ -1,4 +1,4 @@
-<!-- Version: 1.7 | Last updated: 2026-08-25 -->
+<!-- Version: 1.8 | Last updated: 2026-08-26 -->
 
 # Frontmatter Reference
 
@@ -421,7 +421,8 @@ A taxonomy term can have its own branch bundle—for example, `content/tags/them
 ```yaml
 ---
 title: Theme
-list_style: cards  # list | cards
+description: Articles about using and extending the theme.
+list_style: summary  # list | summary | cards
 ---
 
 Articles about using and extending the theme.
@@ -429,7 +430,7 @@ Articles about using and extending the theme.
 
 Resolution uses the first supported value: term `list_style`, then site `termListStyle`, then `list`. An unsupported term value is ignored and falls through to the site setting; an unsupported site value falls through to `list`.
 
-`list` preserves the unpaginated title/date presentation and draft labels. `cards` uses the existing masonry card partial, filters `params.excludedTypes` before pagination, follows the site pager size, and loads only the masonry initializer. Term pages do not support the section-only `gallery`, `prose`, or carousel modes. This setting does not change the taxonomy index at `/tags/`.
+`list` preserves the unpaginated title/date presentation and draft labels. `summary` reuses the section list rows with article metadata, originating section, description or first-paragraph summary, optional background image, and site-sized pagination. `cards` uses the existing masonry card partial, follows the site pager size, and loads only the masonry initializer. All modes filter `params.excludedTypes` before rendering or pagination. Term pages do not support the section-only `gallery`, `prose`, or carousel modes. This setting changes neither the taxonomy index at `/tags/` nor tag links rendered elsewhere.
 
 ---
 
@@ -474,6 +475,7 @@ toc: true
 
 ## Changelog
 
+- **1.8** (2026-08-26): #82/#84 follow-up. Added the `summary` term-bundle override and documented its section-style rows and pagination.
 - **1.7** (2026-08-25): #84 documentation. Added taxonomy term-bundle content and the `list_style` list/cards override contract.
 - **1.6** (2026-07-18): Clarified review-enabled card and carousel metadata, semantic attribution styling, and site-level connector localization.
 - **1.5** (2026-07-17): Clarified media-aware review placement across banner, hero, featured, background, image-free, and column presentations.

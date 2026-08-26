@@ -1,5 +1,5 @@
 # shellcheck shell=bash
-# ABOUTME: Builds taxonomy-term fixtures and asserts issue #84 list/card behavior from rendered HTML.
+# ABOUTME: Builds taxonomy-term fixtures and asserts issue #84 list/summary/card behavior from rendered HTML.
 # ABOUTME: Exercises configuration precedence, filtering, pagination, scripts, and example-site integration.
 
 term_style_build() {
@@ -203,7 +203,7 @@ term_style_rt_84_15() {
     local ordered
     page="$(term_style_page summary tags/default)" || return 1
     ordered="$(htmlq -f "$page" -t '.page-header, .page-content, .list-view')"
-    [[ "$ordered" == *'Entries tagged - "default"'*'Default term description.'*'DEFAULT TERM CONTENT'*'Alpha Entry'* ]] || return 1
+    [[ "$ordered" == *'Default Term'*'Default term description.'*'DEFAULT TERM CONTENT'*'Alpha Entry'* ]] || return 1
     [[ "$(term_style_summary_titles "$page")" == $'Alpha Entry\nBravo Entry' ]] || return 1
     [[ "$(htmlq -f "$page" -t '.list-view-summary')" == $'Alpha card description.\nBravo card description.' ]] || return 1
     [[ "$(htmlq -f "$page" -t '.list-view-section')" == $'Articles\nArticles' ]] || return 1
@@ -227,6 +227,19 @@ term_style_rt_84_17() {
     [[ "$ordered" == *'Override Summary Term'*'Override summary description.'*'OVERRIDE SUMMARY TERM CONTENT'*'Alpha Entry'* ]] || return 1
     [[ "$(term_style_summary_titles "$page")" == $'Alpha Entry\nBravo Entry' ]] || return 1
     [[ -z "$(htmlq -f "$page" '.masonry-grid, ul.posts, script[src$="js/masonry-init.js"]')" ]]
+}
+
+term_style_rt_84_18() {
+    local build_dir
+    local summary_page
+    local cards_page
+    build_dir="$(build_examplesite)" || return 1
+    summary_page="$build_dir/tags/reference/index.html"
+    cards_page="$build_dir/tags/theme/index.html"
+    [[ -n "$(htmlq -f "$summary_page" '.page-header + .list-view, .page-header ~ .list-view')" ]] || return 1
+    [[ -n "$(term_style_summary_titles "$summary_page")" ]] || return 1
+    [[ -n "$(term_style_card_titles "$cards_page")" ]] || return 1
+    term_style_has_script "$cards_page" 'js/masonry-init.js'
 }
 
 run_term_style_case() {

@@ -4,11 +4,11 @@
      site setting; invalid site values retain the compatibility default. */ -}}
 {{- $listStyle := "list" -}}
 {{- $siteListStyle := site.Params.termListStyle | default "" -}}
-{{- if in (slice "list" "cards") $siteListStyle -}}
+{{- if in (slice "list" "summary" "cards") $siteListStyle -}}
 	{{- $listStyle = $siteListStyle -}}
 {{- end -}}
 {{- $termListStyle := .Params.list_style | default "" -}}
-{{- if in (slice "list" "cards") $termListStyle -}}
+{{- if in (slice "list" "summary" "cards") $termListStyle -}}
 	{{- $listStyle = $termListStyle -}}
 {{- end -}}
 
@@ -22,11 +22,20 @@
 	{{- end -}}
 {{- end -}}
 
-{{ if isset .Data "Term" }}
-<h1>Entries tagged - "{{ .Data.Term }}"</h1>
-{{ else }}
-<h1 class="page-title">All articles</h1>
-{{ end }}
+{{- if eq $listStyle "summary" }}
+<header class="page-header">
+	<h1>{{ partial "display-title.html" . }}</h1>
+	{{- with .Params.description }}
+	<p class="page-description">{{ . }}</p>
+	{{- end }}
+</header>
+{{- else }}
+	{{ if isset .Data "Term" }}
+	<h1>Entries tagged - "{{ .Data.Term }}"</h1>
+	{{ else }}
+	<h1 class="page-title">All articles</h1>
+	{{ end }}
+{{- end }}
 
 {{- if .Content }}
 <div class="page-content">
@@ -39,6 +48,10 @@
 	{{ partial "masonry-grid.html" (dict "pages" $paginator.Pages "showSection" false "Site" .Site) }}
 	{{ partial "pagination.html" $paginator }}
 <script src="{{ "js/masonry-init.js" | relURL }}"></script>
+{{- else if eq $listStyle "summary" -}}
+	{{- $paginator := .Paginate $pages -}}
+	{{ partial "list-view.html" (dict "pages" $paginator.Pages "showSection" true "Site" .Site) }}
+	{{ partial "pagination.html" $paginator }}
 {{- else -}}
 <ul class="posts">
 	{{- range $pages -}}

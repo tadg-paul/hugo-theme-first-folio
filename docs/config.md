@@ -1,4 +1,4 @@
-<!-- Version: 1.7 | Last updated: 2026-08-25 -->
+<!-- Version: 1.8 | Last updated: 2026-08-26 -->
 
 # Configuration Reference
 
@@ -521,16 +521,18 @@ Controls how the pages belonging to one taxonomy termâ€”such as `/tags/theme/`â€
 
 ```yaml
 params:
-  termListStyle: cards  # list | cards
+  termListStyle: summary  # list | summary | cards
 ```
 
 | Key | Default | Description |
 |---|---|---|
-| `termListStyle` | `list` | Site-wide term-page presentation. `list` preserves the unpaginated title/date list; `cards` uses the theme masonry cards and site pager size. |
+| `termListStyle` | `list` | Site-wide term-page presentation: `list` preserves the unpaginated title/date list; `summary` uses paginated section-style rows with metadata and excerpts; `cards` uses paginated masonry cards. |
 
-Only `list` and `cards` are supported. Unsupported values are ignored, so an invalid site value resolves to the backwards-compatible `list` default rather than activating cards. A term bundle can override the site value with `list_style`; see [Frontmatter Reference](frontmatter.md#taxonomy-term-bundles).
+The name follows Hugo's taxonomy model: `/tags/` is a taxonomy page, while `/tags/theme/` is a term page. The setting works for every configured taxonomy, so it is intentionally `termListStyle` rather than the tags-only `tagListStyle`.
 
-Both presentations render term-bundle content above the entries and apply `excludedTypes` before rendering. Cards filter before pagination, load the masonry initializer, and do not add carousel behavior. The `/tags/` taxonomy index and its existing tag cloud are unaffected.
+Only `list`, `summary`, and `cards` are supported. Unsupported values are ignored, so an invalid site value resolves to the backwards-compatible `list` default rather than activating another presentation. A term bundle can override the site value with `list_style`; see [Frontmatter Reference](frontmatter.md#taxonomy-term-bundles).
+
+All three presentations render term-bundle content above the entries and apply `excludedTypes` before rendering. `summary` uses the same established rows as a section with `list_style: list`: article title, author/date metadata, originating section, description or first-paragraph summary, and an optional low-opacity background image. Summary rows and cards paginate at the site pager size; only cards load the masonry initializer. The compatibility `list` remains unpaginated. This setting does not affect the `/tags/` taxonomy index, tag links in article sidebars, or any other taxonomy navigation.
 
 ---
 
@@ -646,6 +648,7 @@ See `exampleSite/config/_default/hugo.yaml` for a complete working configuration
 
 ## Changelog
 
+- **1.8** (2026-08-26): #82/#84 follow-up. Added the `summary` taxonomy term presentation and clarified the `termListStyle` scope, name, values, and sidebar independence.
 - **1.7** (2026-08-25): #82 example-site polish. Added tag-cloud resting opacity and opt-in button navigation with one-level nested Hugo menus.
 - **1.6** (2026-08-25): #84 documentation. Added the backwards-compatible list/cards contract for taxonomy term pages, including precedence, filtering, and pagination behavior.
 - **1.5** (2026-08-25): #83 documentation. Added the opt-in tag-cloud activation and site-wide sizing contract.
