@@ -57,6 +57,10 @@ term_style_card_titles() {
     htmlq -f "$1" -t '.masonry-grid > .masonry-item h3 > a'
 }
 
+term_style_summary_titles() {
+    htmlq -f "$1" -t '.list-view > .list-view-item .list-view-title > a'
+}
+
 term_style_has_script() {
     local page="$1"
     local source="$2"
@@ -192,6 +196,37 @@ term_style_rt_84_14() {
     page="$(term_style_page cards tags/invalid-term)" || return 1
     [[ "$(term_style_card_titles "$page")" == $'Alpha Entry\nBravo Entry' ]] || return 1
     term_style_has_script "$page" 'js/masonry-init.js'
+}
+
+term_style_rt_84_15() {
+    local page
+    local ordered
+    page="$(term_style_page summary tags/default)" || return 1
+    ordered="$(htmlq -f "$page" -t '.page-header, .page-content, .list-view')"
+    [[ "$ordered" == *'Entries tagged - "default"'*'Default term description.'*'DEFAULT TERM CONTENT'*'Alpha Entry'* ]] || return 1
+    [[ "$(term_style_summary_titles "$page")" == $'Alpha Entry\nBravo Entry' ]] || return 1
+    [[ "$(htmlq -f "$page" -t '.list-view-summary')" == $'Alpha card description.\nBravo card description.' ]] || return 1
+    [[ "$(htmlq -f "$page" -t '.list-view-section')" == $'Articles\nArticles' ]] || return 1
+    [[ "$(htmlq -f "$page" -a href '.pagination-next > a')" == '/tags/default/page/2/' ]] || return 1
+    [[ -z "$(htmlq -f "$page" '.masonry-grid, ul.posts, script[src$="js/masonry-init.js"]')" ]]
+}
+
+term_style_rt_84_16() {
+    local page
+    page="$(term_style_page summary tags/default/page/2)" || return 1
+    [[ "$(term_style_summary_titles "$page")" == $'Charlie Entry\nDelta Entry' ]] || return 1
+    [[ -z "$(htmlq -f "$page" -t '.list-view' | rg 'Excluded (Page|Secret) Entry')" ]] || return 1
+    [[ -z "$(htmlq -f "$page" 'a[href="/tags/default/page/3/"]')" ]]
+}
+
+term_style_rt_84_17() {
+    local page
+    local ordered
+    page="$(term_style_page cards tags/override-summary)" || return 1
+    ordered="$(htmlq -f "$page" -t '.page-header, .page-content, .list-view')"
+    [[ "$ordered" == *'Override Summary Term'*'Override summary description.'*'OVERRIDE SUMMARY TERM CONTENT'*'Alpha Entry'* ]] || return 1
+    [[ "$(term_style_summary_titles "$page")" == $'Alpha Entry\nBravo Entry' ]] || return 1
+    [[ -z "$(htmlq -f "$page" '.masonry-grid, ul.posts, script[src$="js/masonry-init.js"]')" ]]
 }
 
 run_term_style_case() {
