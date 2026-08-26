@@ -20,12 +20,14 @@
   {{- end -}}
 
   {{ range .Site.Menus.main }}
+    {{- $menuPath := trim .URL "/" -}}
     {{- /* Extract section name from URL using path.Base */ -}}
     {{- /* This handles baseURL expansion: /www-omni/poetry/ -> poetry */ -}}
-    {{- $menuSection := path.Base (trim .URL "/") -}}
+    {{- $menuSection := path.Base $menuPath -}}
 
-    {{- /* Check if this menu item matches current section */ -}}
-    {{- $isActive := eq $currentSection $menuSection -}}
+    {{- /* The root menu item has no section, so match it to Hugo's home page explicitly. */ -}}
+    {{- $isRoot := eq $menuPath "" -}}
+    {{- $isActive := or (and $.Page.IsHome $isRoot) (and (not $isRoot) (eq $currentSection $menuSection)) -}}
 
     {{- /* Build class string based on active state. A group is active when one
            of its direct children represents the current section. */ -}}
