@@ -13,7 +13,7 @@ run_test() {
 
     [[ -n "$(htmlq -f "$page" '#main-nav.nav--buttons')" ]] || return 1
     [[ "$top_links" == $'Home\nProfile' ]] || return 1
-    [[ "$(htmlq -f "$page" -t '#main-nav > a.nav-item.nav-item-active[aria-current="page"]')" == 'Home' ]] || return 1
+    [[ "$(htmlq -f "$page" -t '#main-nav > a.nav-item-active, #main-nav > details > summary.nav-item-active')" == 'Home' ]] || return 1
     [[ "$(htmlq -f "$page" -t '#main-nav > details.nav-group > summary')" == $'Explore\nReviews' ]] || return 1
     [[ "$(htmlq -f "$page" -a name '#main-nav > details.nav-group')" == $'main-navigation-group\nmain-navigation-group' ]] || return 1
     [[ "$(htmlq -f "$page" -a href '#main-nav > details.nav-group:first-of-type .nav-submenu a')" == $'/recipes/\n/journal/\n/photography/\n/stories/\n/poetry/' ]] || return 1

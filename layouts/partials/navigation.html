@@ -26,7 +26,7 @@
     {{- $menuSection := path.Base $menuPath -}}
 
     {{- /* The root menu item has no section, so match it to Hugo's home page explicitly. */ -}}
-    {{- $isRoot := eq $menuPath "" -}}
+    {{- $isRoot := and (not .HasChildren) (eq $menuPath "") -}}
     {{- $isActive := or (and $.Page.IsHome $isRoot) (and (not $isRoot) (eq $currentSection $menuSection)) -}}
 
     {{- /* Build class string based on active state. A group is active when one
@@ -34,7 +34,7 @@
     {{- $groupActive := false -}}
     {{- range .Children -}}
       {{- $childSection := path.Base (trim .URL "/") -}}
-      {{- if eq $currentSection $childSection -}}{{- $groupActive = true -}}{{- end -}}
+      {{- if and $currentSection (eq $currentSection $childSection) -}}{{- $groupActive = true -}}{{- end -}}
     {{- end -}}
     {{- $classes := "nav-item" -}}
     {{- if or $isActive $groupActive -}}
@@ -48,10 +48,11 @@
         {{- range .Children }}
           {{- $childSection := path.Base (trim .URL "/") -}}
           {{- $childClasses := "nav-submenu-item" -}}
-          {{- if eq $currentSection $childSection -}}
+          {{- $childActive := and $currentSection (eq $currentSection $childSection) -}}
+          {{- if $childActive -}}
             {{- $childClasses = printf "%s nav-item-active" $childClasses -}}
           {{- end }}
-        <a href="{{ .URL }}" class="{{ $childClasses }}"{{ if eq $currentSection $childSection }} aria-current="page"{{ end }}>{{ .Name }}</a>
+        <a href="{{ .URL }}" class="{{ $childClasses }}"{{ if $childActive }} aria-current="page"{{ end }}>{{ .Name }}</a>
         {{- end }}
       </div>
     </details>
