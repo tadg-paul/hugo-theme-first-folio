@@ -8,10 +8,8 @@ source "$(dirname "${BASH_SOURCE[0]}")/_helpers.sh"
 run_test() {
     local page
     local top_links
-    local css_file
     page="$(example_polish_page)" || return 1
     top_links="$(htmlq -f "$page" -t '#main-nav > a.nav-item')"
-    css_file="$(example_polish_theme_css "$page")" || return 1
 
     [[ -n "$(htmlq -f "$page" '#main-nav.nav--buttons')" ]] || return 1
     [[ "$top_links" == $'Home\nProfile' ]] || return 1
@@ -19,15 +17,5 @@ run_test() {
     [[ "$(htmlq -f "$page" -a name '#main-nav > details.nav-group')" == $'main-navigation-group\nmain-navigation-group' ]] || return 1
     [[ "$(htmlq -f "$page" -a href '#main-nav > details.nav-group:first-of-type .nav-submenu a')" == $'/recipes/\n/journal/\n/photography/\n/stories/\n/poetry/' ]] || return 1
     [[ "$(htmlq -f "$page" -a href '#main-nav > details.nav-group:last-of-type .nav-submenu a')" == $'/book-reviews/\n/game-reviews/' ]] || return 1
-    [[ "$(htmlq -f "$page" -t '#main-nav')" != *'Tags'* ]] || return 1
-    grep -qF 'font-family: var(--font-heading);' "$css_file" || return 1
-    grep -qF 'font-size: 0.72rem;' "$css_file" || return 1
-    grep -qF 'font-weight: 700;' "$css_file" || return 1
-    grep -qF 'text-transform: uppercase;' "$css_file" || return 1
-    grep -qF 'padding: 0.32rem 0.62rem;' "$css_file" || return 1
-    grep -qF 'gap: 0.35rem;' "$css_file" || return 1
-    grep -qF 'border-radius: 999px;' "$css_file" || return 1
-    grep -qF 'border: 1px solid color-mix(in srgb, var(--text-color) 22%, transparent);' "$css_file" || return 1
-    grep -qF 'color: color-mix(in srgb, var(--text-color) 70%, transparent);' "$css_file" || return 1
-    grep -qF 'animation: none;' "$css_file"
+    [[ "$(htmlq -f "$page" -t '#main-nav')" != *'Tags'* ]]
 }

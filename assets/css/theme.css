@@ -1348,27 +1348,28 @@ nav.nav--buttons > .nav-group > summary.nav-item {
   letter-spacing: 0.06em;
   text-transform: uppercase;
   padding: 0.32rem 0.62rem;
-  border: 1px solid color-mix(in srgb, var(--text-color) 22%, transparent);
+  border: 1px solid transparent;
   border-radius: 999px;
-  background: color-mix(in srgb, var(--bg-secondary) 78%, transparent);
+  background: color-mix(in srgb, var(--color-primary) 18%, var(--bg-secondary));
   box-shadow: 0 1px 2px color-mix(in srgb, var(--text-color) 10%, transparent);
-  color: color-mix(in srgb, var(--text-color) 70%, transparent);
+  color: var(--text-secondary);
 }
 
 nav.nav--buttons > a.nav-item:hover,
 nav.nav--buttons > .nav-group > summary.nav-item:hover,
 nav.nav--buttons > a.nav-item:focus-visible,
 nav.nav--buttons > .nav-group > summary.nav-item:focus-visible {
-  background: var(--bg-hover) !important;
-  border-color: color-mix(in srgb, var(--color-primary) 65%, transparent);
+  background: color-mix(in srgb, var(--color-primary) 30%, var(--bg-secondary)) !important;
+  border-color: transparent;
   color: var(--text-color) !important;
   animation: none;
 }
 
 nav.nav--buttons > a.nav-item.nav-item-active,
 nav.nav--buttons > .nav-group > summary.nav-item.nav-item-active {
-  border: 2px solid var(--color-primary) !important;
-  color: var(--text-color);
+  border: 1px solid var(--color-primary) !important;
+  background: var(--color-primary);
+  color: #fff;
 }
 
 .nav-group {
