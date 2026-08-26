@@ -1336,24 +1336,39 @@ h2 a.header-interactive:hover {
 
 /* Optional compact button treatment. Sites that omit params.navigation.style
    retain the established link presentation above. */
+nav.nav--buttons {
+  gap: 0.35rem;
+}
+
 nav.nav--buttons > a.nav-item,
 nav.nav--buttons > .nav-group > summary.nav-item {
-  padding: 0.4rem 0.7rem;
-  border: 1px solid var(--border-color);
-  border-radius: 0.45rem;
-  background: var(--bg-secondary);
-  box-shadow: 0 1px 2px var(--shadow-light);
+  font-family: var(--font-heading);
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  padding: 0.32rem 0.62rem;
+  border: 1px solid color-mix(in srgb, var(--text-color) 22%, transparent);
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--bg-secondary) 78%, transparent);
+  box-shadow: 0 1px 2px color-mix(in srgb, var(--text-color) 10%, transparent);
+  color: color-mix(in srgb, var(--text-color) 70%, transparent);
 }
 
 nav.nav--buttons > a.nav-item:hover,
-nav.nav--buttons > .nav-group > summary.nav-item:hover {
+nav.nav--buttons > .nav-group > summary.nav-item:hover,
+nav.nav--buttons > a.nav-item:focus-visible,
+nav.nav--buttons > .nav-group > summary.nav-item:focus-visible {
   background: var(--bg-hover) !important;
-  border-color: var(--color-primary);
+  border-color: color-mix(in srgb, var(--color-primary) 65%, transparent);
+  color: var(--text-color) !important;
+  animation: none;
 }
 
 nav.nav--buttons > a.nav-item.nav-item-active,
 nav.nav--buttons > .nav-group > summary.nav-item.nav-item-active {
   border: 2px solid var(--color-primary) !important;
+  color: var(--text-color);
 }
 
 .nav-group {
@@ -1545,6 +1560,23 @@ header .main {
   header .nav-submenu-item {
     display: block;
     white-space: normal;
+  }
+
+  /* Keep compact desktop pills large enough to operate by touch when the
+     navigation becomes a full-screen mobile menu. */
+  header nav.nav--buttons {
+    gap: 0.75rem;
+  }
+
+  header nav.nav--buttons > a.nav-item,
+  header nav.nav--buttons > .nav-group > summary.nav-item {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 2.75rem;
+    padding: 0.65rem 1rem;
+    font-size: 0.9rem;
+    box-sizing: border-box;
   }
 
   .nav-dropdown-menu {

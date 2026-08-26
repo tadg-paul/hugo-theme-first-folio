@@ -40,7 +40,7 @@
     {{- end -}}
 
     {{- if .HasChildren }}
-    <details class="nav-group">
+    <details class="nav-group" name="main-navigation-group">
       <summary class="{{ $classes }}">{{ .Name }}</summary>
       <div class="nav-submenu">
         {{- range .Children }}

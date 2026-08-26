@@ -634,7 +634,7 @@ menu:
       weight: 20
 ```
 
-Lower weight appears first in navigation. A menu item with an `identifier` becomes a one-level disclosure menu when other entries name that identifier as their `parent`. The disclosure uses native `<details>` and `<summary>` controls, so it remains keyboard-accessible without JavaScript. Further nesting is not rendered.
+Lower weight appears first in navigation. A menu item with an `identifier` becomes a one-level disclosure menu when other entries name that identifier as their `parent`. The disclosure uses native `<details>` and `<summary>` controls, so it remains keyboard-accessible without JavaScript; opening one group closes any other open navigation group. Further nesting is not rendered.
 
 ---
 
