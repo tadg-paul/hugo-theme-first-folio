@@ -179,6 +179,14 @@
 			{{ partial "pagination.html" $paginator }}
 			{{- end -}}
 
+			{{- /* Optional content below the homepage listing. RenderString allows
+			     front matter to place ordinary Markdown and shortcodes here. */ -}}
+			{{- with .Params.footer_content -}}
+			<div class="homepage-footer-content">
+				{{ $.RenderString . }}
+			</div>
+			{{- end -}}
+
 			{{- if $showSidebar -}}
 				</div>
 			</div>

@@ -1430,6 +1430,44 @@ nav.nav--buttons > .nav-group > summary.nav-item.nav-item-active {
   color: inherit;
 }
 
+nav.nav--buttons .nav-submenu {
+  padding: 0;
+  overflow: hidden;
+  border: 0;
+  border-radius: 0.65rem;
+  background: color-mix(in srgb, var(--color-primary) 18%, var(--bg-secondary));
+}
+
+nav.nav--buttons .nav-group[open] > .nav-submenu {
+  gap: 0;
+}
+
+nav.nav--buttons .nav-submenu-item {
+  padding: 0.42rem 0.7rem;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  color: var(--text-secondary);
+  font-family: var(--font-heading);
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+nav.nav--buttons .nav-submenu-item:hover,
+nav.nav--buttons .nav-submenu-item:focus,
+nav.nav--buttons .nav-submenu-item:focus-visible {
+  background: color-mix(in srgb, var(--color-primary) 30%, var(--bg-secondary)) !important;
+  color: var(--text-color) !important;
+  animation: none !important;
+}
+
+nav.nav--buttons .nav-submenu-item.nav-item-active {
+  background: var(--color-primary);
+  color: #fff;
+}
+
 .site-logo-text {
   font-family: var(--font-site-title);
   font-size: 1.5rem;
@@ -3293,15 +3331,65 @@ main.list .masonry-grid {
 
 .list-view-meta {
   display: flex;
-  gap: 1rem;
+  align-items: center;
+  flex-wrap: nowrap;
+  gap: 0.65rem;
+  min-width: 0;
+  overflow: hidden;
   font-size: 0.875rem;
   color: var(--text-secondary, #666);
   margin: 0 0 0.5rem 0;
   margin-block: 0 0.5rem;
+  white-space: nowrap;
 }
 
 .list-view-section {
+  flex: 0 0 auto;
+  padding: 0.1rem 0.45rem;
+  border-radius: 999px;
+  background: var(--color-secondary);
+  color: #17201f;
+  font-weight: 700;
+  line-height: 1.35;
   text-transform: capitalize;
+}
+
+.list-view-author {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.list-view-meta > time {
+  flex: 0 0 auto;
+}
+
+.list-view-meta .review-listing-metadata {
+  display: inline-flex;
+  align-items: center;
+  flex: 1 1 auto;
+  flex-wrap: nowrap;
+  gap: 0.65rem;
+  min-width: 0;
+  margin: 0;
+  margin-block: 0;
+  overflow: hidden;
+  font-size: inherit;
+}
+
+.list-view-meta .review-listing-title {
+  display: block;
+  min-width: 0;
+  padding: 0.1rem 0.45rem;
+  overflow: hidden;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--color-secondary) 24%, var(--bg-secondary));
+  color: var(--text-color);
+  text-overflow: ellipsis;
+}
+
+.list-view-meta .review-listing-creator {
+  flex: 0 0 auto;
 }
 
 /* Issue #21: Reset all paragraph margins inherited from main.css p rule */

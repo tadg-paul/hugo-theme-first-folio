@@ -57,8 +57,8 @@
         {{- if and .Date (not .Params.hideDate) -}}
         <time datetime="{{ .Date.Format "2006-01-02" }}">{{ .Date.Format "2 Jan 2006" }}</time>
         {{- end -}}
+        {{- with .Params.review }}{{ partial "review/listing.html" (dict "Page" $page "Prefix" "list-view") }}{{ end }}
       </div>
-      {{- with .Params.review }}{{ partial "review/listing.html" (dict "Page" $page "Prefix" "list-view") }}{{ end }}
       {{- $excerpt := .Description | default .Summary -}}
       {{- if $excerpt -}}
       <p class="list-view-summary">{{ $excerpt | plainify | truncate 150 }}</p>

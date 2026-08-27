@@ -1,6 +1,12 @@
 /* ABOUTME: Styling for the tagcloud shortcode. The template emits weight, count and hue; everything visual is here.
    ABOUTME: Neutral colours come from the theme's custom properties so the cloud follows light and dark ambience. */
 
+.homepage-footer-content {
+  margin: 2.5rem auto 0;
+  padding-top: 2rem;
+  border-top: 1px solid var(--color-border, rgba(128, 128, 128, 0.25));
+}
+
 .tagcloud {
   /* Size model: the least-used term renders at --tagcloud-base, the most-used
      at base x --tagcloud-multiplier.
