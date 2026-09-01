@@ -1,4 +1,4 @@
-<!-- Version: 1.8 | Last updated: 2026-08-26 -->
+<!-- Version: 1.9 | Last updated: 2026-09-01 -->
 
 # Frontmatter Reference
 
@@ -248,6 +248,41 @@ video:
 
 ## Homepage controls
 
+### Homepage content placement
+
+The root homepage bundle, `content/_index.md`, has two shortcode-aware content
+positions:
+
+| Position | Source | Rendering order |
+|----------|--------|-----------------|
+| Top content | Body after the frontmatter | Immediately below the site menu and before the homepage listing |
+| Footer content | `footer_content` frontmatter | After the homepage listing and pagination, immediately before the site footer |
+
+Use the page body for a prominent tag cloud below the menu:
+
+```markdown
+---
+title: Home
+---
+
+{{< tagcloud limit="24" pack="rows" >}}
+```
+
+Use `footer_content` for the same component below the homepage listing:
+
+```yaml
+---
+title: Home
+footer_content: |
+  {{< tagcloud limit="24" pack="rows" >}}
+---
+```
+
+Both positions accept Markdown and shortcodes. They are homepage regions, not
+the shared header or footer partials, and require no downstream template
+override. The tag cloud must also be enabled through
+`params.tagcloud.enabled`; see the [tag-cloud shortcode reference](shortcodes.md#tagcloud).
+
 ### Pin
 
 Pins a page to the top of the homepage masonry grid for its section.
@@ -475,6 +510,7 @@ toc: true
 
 ## Changelog
 
+- **1.9** (2026-09-01): Documented the homepage body and `footer_content` shortcode positions and their rendering order.
 - **1.8** (2026-08-26): #82/#84 follow-up. Added the `summary` term-bundle override and documented its section-style rows and pagination.
 - **1.7** (2026-08-25): #84 documentation. Added taxonomy term-bundle content and the `list_style` list/cards override contract.
 - **1.6** (2026-07-18): Clarified review-enabled card and carousel metadata, semantic attribution styling, and site-level connector localization.

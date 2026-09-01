@@ -1,4 +1,4 @@
-<!-- Version: 1.8 | Last updated: 2026-08-26 -->
+<!-- Version: 1.9 | Last updated: 2026-09-01 -->
 
 # Configuration Reference
 
@@ -558,6 +558,13 @@ params:
 
 Sizing and resting text opacity are site-wide so clouds remain visually consistent. Data selection, sorting, packing, and optional counts belong to each shortcode or partial call; see [Shortcodes Reference](shortcodes.md#tagcloud).
 
+Enabling the component does not choose its position. On the homepage, place the
+shortcode in the body of `content/_index.md` to show it immediately below the
+site menu, or place it in that page's `footer_content` frontmatter to show it
+after the homepage listing and pagination. Neither option requires a downstream
+template override. See [Homepage placement](shortcodes.md#homepage-placement)
+for both examples.
+
 ---
 
 ## Other settings
@@ -648,6 +655,7 @@ See `exampleSite/config/_default/hugo.yaml` for a complete working configuration
 
 ## Changelog
 
+- **1.9** (2026-09-01): Documented the two override-free homepage tag-cloud placements: page body below the menu and `footer_content` after the listing.
 - **1.8** (2026-08-26): #82/#84 follow-up. Added the `summary` taxonomy term presentation and clarified the `termListStyle` scope, name, values, and sidebar independence.
 - **1.7** (2026-08-25): #82 example-site polish. Added tag-cloud resting opacity and opt-in button navigation with one-level nested Hugo menus.
 - **1.6** (2026-08-25): #84 documentation. Added the backwards-compatible list/cards contract for taxonomy term pages, including precedence, filtering, and pagination behavior.

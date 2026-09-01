@@ -1,4 +1,4 @@
-<!-- Version: 1.8 | Last updated: 2026-08-25 -->
+<!-- Version: 1.9 | Last updated: 2026-09-01 -->
 
 # Shortcodes Reference
 
@@ -817,6 +817,37 @@ params:
 {{< tagcloud limit="24" pack="rows" >}}
 ```
 
+### Homepage placement
+
+The homepage offers two shortcode-aware positions. Both are configured in the
+downstream site's `content/_index.md`; neither requires a template override.
+
+To render the cloud immediately below the site menu and before the homepage
+listing, put it in the page body after the closing frontmatter delimiter:
+
+```markdown
+---
+title: Home
+---
+
+{{< tagcloud limit="24" pack="rows" >}}
+```
+
+To render the cloud after the homepage listing and pagination, put it in the
+`footer_content` frontmatter field:
+
+```yaml
+---
+title: Home
+footer_content: |
+  {{< tagcloud limit="24" pack="rows" >}}
+---
+```
+
+`footer_content` is a homepage content region immediately before the site's
+footer. It does not insert the cloud inside the shared footer and does not make
+it appear on other page types.
+
 Templates can reuse the same implementation directly:
 
 ```go-html-template
@@ -827,7 +858,8 @@ The enable switch applies to direct partial calls as well as the shortcode.
 
 ### Live Demo
 
-The example site's homepage enables and renders a 24-term row-packed tag cloud.
+The example site's homepage enables a 24-term row-packed tag cloud. Its selected
+placement can be inspected in `exampleSite/content/_index.md`.
 
 ---
 
@@ -937,6 +969,7 @@ See [live example on the demo site](https://demo.theme.tadg.ie/journal/shortcode
 
 ## Changelog
 
+- **1.9** (2026-09-01): Documented body and `footer_content` homepage placement, including their rendering order and override-free downstream configuration.
 - **1.8** (2026-08-25): #82 example-site polish. Documented the site-wide tag-cloud resting opacity control.
 - **1.7** (2026-08-25): #83 documentation. Added the opt-in `tagcloud` shortcode, its template partial, parameters, sizing configuration, and example-site placement.
 - **1.6** (2026-07-14): #76 documentation. Changed the block spoiler label to a full-width control with centred text.

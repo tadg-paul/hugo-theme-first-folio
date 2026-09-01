@@ -145,8 +145,15 @@ The homepage displays a masonry grid with pinned/featured content from each sect
   <!-- Optional homepage content from _index.md -->
   <!-- Masonry grid with pinned + recent content -->
   <!-- Pagination for remaining content -->
+  <!-- Optional footer_content from _index.md frontmatter -->
 </main>
 ```
+
+Homepage body content renders immediately below the site menu and can contain
+shortcodes. The optional `footer_content` frontmatter field also accepts
+Markdown and shortcodes, but renders after the homepage listing and pagination,
+before the site footer. See the [tag-cloud placement examples](docs/shortcodes.md#homepage-placement)
+and [frontmatter reference](docs/frontmatter.md#homepage-content-placement).
 
 ### List Pages (`layouts/_default/list.html`)
 
